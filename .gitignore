@@ -1,0 +1,10 @@
+.svn
+*.dcu
+*.map
+*.exe
+*.local
+__history/
+*.identcache
+*.cab 
+*.pdf 
+*.fdb 
