@@ -214,9 +214,9 @@ uses
   variants, uVarClass, uAppUtils, JclFileUtils, appdmduSystem, ZSdmdu, FVfrmuModule,
   fMessageDlg, ZSfrmuModule, FDfrmuModule, FDdmdu, appfrmuGlobal,
   appIniOptionsUnit, ZSPlatciDetailForm, AOPdmdu, FVdmdu, appGenIdUnit,
-  ZSConstDefUnit, fKatalogyModul, AOPfrmuEdit, AOPConstDefUnit, AOPfrmuPickUser,
+  ZSConstDefUnit, fKatalogyModul, AOPfrmuEdit, uAOPConstDefUnit, AOPfrmuPickUser,
   fZSNakVyk, appReportManagerForm, appReportModule, JclMapi, appReportUtils,
-  fZsConfirmCopy;
+  fZsConfirmCopy, uaopfirmaclass;
 
 resourcestring
   SChceteKopRovatAktuLnPEpravu = ' Chcete kopírovat aktuální pøepravu?';
@@ -516,20 +516,23 @@ end;
 
 procedure TfrmZSDetail.cbDopNazevPropertiesCloseUp(Sender: TObject);
 var
-  lFirma: TFirmaObject;
+  lc_Firma : TAOPFirmaClass;
+  lc_aopkod: string;
 begin
   if cbDopNazev.EditValue <> null then
   begin
-    lFirma := AOPdmd.GetAopInfo(VarToStr(cbDopNazev.EditValue));
+    lc_aopkod := VarToStr(cbDopNazev.EditValue);
+    lc_Firma  := TAOPFirmaClass.Create(lc_aopkod, False);
+
     if not(ZSdmd.Zasilky.State in [dsEdit, dsInsert]) then
       ZSdmd.Zasilky.Edit;
-    if lFirma <> nil then
+    if lc_Firma.naseladresu then
     begin
-      ZSdmd.ZasilkyAOPKOD_DOP.AsVariant  := lFirma.AOPKod;
-      ZSdmd.ZasilkyDOP_EMAILS.AsString   := lFirma.SendingAdress;
-      ZSdmd.ZasilkyD_SPLATNOST.AsInteger := lFirma.Splatnost;
+      ZSdmd.ZasilkyAOPKOD_DOP.AsVariant  := lc_Firma.AOPKod;
+      ZSdmd.ZasilkyDOP_EMAILS.AsString   := lc_Firma.Email;
+      ZSdmd.ZasilkyD_SPLATNOST.AsInteger := lc_Firma.Splatnost;
     end;
-    FreeAndNil(lFirma);
+    FreeAndNil(lc_Firma);
   end
   else
   begin
@@ -540,19 +543,22 @@ end;
 
 procedure TfrmZSDetail.cbPrikNazevPropertiesCloseUp(Sender: TObject);
 var
-  lFirma: TFirmaObject;
+  lc_Firma : TAOPFirmaClass;
+  lc_aopkod: string;
 begin
   if cbPrikNazev.EditValue <> null then
   begin
-    lFirma := AOPdmd.GetAopInfo(VarToStr(cbPrikNazev.EditValue));
+    lc_aopkod := VarToStr(cbPrikNazev.EditValue);
+    lc_Firma  := TAOPFirmaClass.Create(lc_aopkod, False);
+
     if not(ZSdmd.Zasilky.State in [dsEdit, dsInsert]) then
       ZSdmd.Zasilky.Edit;
-    if lFirma <> nil then
+    if lc_Firma.naseladresu then
     begin
-      ZSdmd.ZasilkyAOPKOD_OBJ.AsVariant := lFirma.AOPKod;
-      ZSdmd.ZasilkyOBJ_EMAILS.AsString  := lFirma.SendingAdress;
+      ZSdmd.ZasilkyAOPKOD_OBJ.AsVariant := lc_Firma.AOPKod;
+      ZSdmd.ZasilkyOBJ_EMAILS.AsString  := lc_Firma.Email;
     end;
-    FreeAndNil(lFirma);
+    FreeAndNil(lc_Firma);
   end
   else
   begin
@@ -568,46 +574,51 @@ end;
 
 procedure TfrmZSDetail.repFirmyClick(Sender: TObject; AButtonIndex: Integer);
 var
-  lFirma: TFirmaObject;
+  lc_Firma : TAOPFirmaCustomClass;
+  lc_aopkod: string;
 begin
+  if (cbDopNazev.EditValue = null) then
+    lc_aopkod := ''
+  else
+    lc_aopkod := VarToStr(cbDopNazev.EditValue);
+
   case AButtonIndex of (* *)
     1:
       begin
-        lFirma        := TFirmaObject.Create;
-        lFirma.AOPKod := VarToStr(cbDopNazev.EditValue);
+        lc_Firma := TAOPFirmaClass.Create(lc_aopkod, True);
 
         try
-          if AopGetKontakt(lFirma) then
+          if lc_Firma.naseladresu then
           begin
             SetEditsState;
-            ZSdmd.ZasilkyAOPKOD_DOP.AsVariant  := lFirma.AOPKod;
-            ZSdmd.ZasilkyDOP_EMAILS.AsString   := lFirma.SendingAdress;
-            ZSdmd.ZasilkyD_SPLATNOST.AsInteger := lFirma.Splatnost;
+            ZSdmd.ZasilkyAOPKOD_DOP.AsVariant  := lc_Firma.AOPKod;
+            ZSdmd.ZasilkyDOP_EMAILS.AsString   := lc_Firma.Email;
+            ZSdmd.ZasilkyD_SPLATNOST.AsInteger := lc_Firma.Splatnost;
 
           end;
 
         finally
-          lFirma.Free;
+          lc_Firma.Free;
         end;
       end;
     2:
       begin
-        lFirma := TFirmaObject.Create;
+        lc_Firma := TAOPFirmaCustomClass.Create;
         try
-          lFirma.AOPKod := VarToStr(cbDopNazev.EditValue);
+          lc_Firma.AOPKod := VarToStr(cbDopNazev.EditValue);
 
-          if lFirma.AOPKod <> '' then
+          if lc_Firma.AOPKod <> '' then
           begin
-            if AopGetDetailSendAdres(lFirma) then
+            if AopGetDetailSendAdres(lc_Firma) then
             begin
               SetEditsState;
-              ZSdmd.ZasilkyAOPKOD_DOP.AsVariant  := lFirma.AOPKod;
-              ZSdmd.ZasilkyDOP_EMAILS.AsString   := lFirma.SendingAdress;
-              ZSdmd.ZasilkyD_SPLATNOST.AsInteger := lFirma.Splatnost;
+              ZSdmd.ZasilkyAOPKOD_DOP.AsVariant  := lc_Firma.AOPKod;
+              ZSdmd.ZasilkyDOP_EMAILS.AsString   := lc_Firma.Email;
+              ZSdmd.ZasilkyD_SPLATNOST.AsInteger := lc_Firma.Splatnost;
             end;
           end;
         finally
-          lFirma.Free;
+          lc_Firma.Free;
         end;
       end;
     3:
@@ -619,47 +630,52 @@ begin
       end;
   end; (* case *)
 
+
 end;
 
 procedure TfrmZSDetail.repPrikazceClick(Sender: TObject; AButtonIndex: Integer);
 var
-  lFirma: TFirmaObject;
+  lc_Firma : TAOPFirmaCustomClass;
+  lc_aopkod: string;
 begin
+  if cbPrikNazev.EditValue = null then
+    lc_aopkod := ''
+  else
+    lc_aopkod := VarToStr(cbPrikNazev.EditValue);
+
   case AButtonIndex of (* *)
     1:
       begin
-        lFirma        := TFirmaObject.Create;
-        lFirma.AOPKod := VarToStr(cbPrikNazev.EditValue);
+        lc_Firma := TAOPFirmaClass.Create(lc_aopkod, True);
 
         try
-          if AopGetKontakt(lFirma) then
+          if lc_Firma.naseladresu then
           begin
             SetEditsState;
-            ZSdmd.ZasilkyAOPKOD_OBJ.AsVariant := lFirma.AOPKod;
-            ZSdmd.ZasilkyOBJ_EMAILS.AsString  := lFirma.SendingAdress;
+            ZSdmd.ZasilkyAOPKOD_OBJ.AsVariant := lc_Firma.AOPKod;
+            ZSdmd.ZasilkyOBJ_EMAILS.AsString  := lc_Firma.Email;
           end;
 
         finally
-          lFirma.Free;
+          lc_Firma.Free;
         end;
       end;
     2:
       begin
-        lFirma := TFirmaObject.Create;
+        lc_Firma := TAOPFirmaCustomClass.Create;
         try
-          lFirma.AOPKod := VarToStr(cbPrikNazev.EditValue);
-
-          if lFirma.AOPKod <> '' then
+          lc_Firma.AOPKod := lc_aopkod;
+          if lc_Firma.AOPKod <> '' then
           begin
-            if AopGetDetailSendAdres(lFirma) then
+            if AopGetDetailSendAdres(lc_Firma) then
             begin
               SetEditsState;
-              ZSdmd.ZasilkyAOPKOD_OBJ.AsVariant := lFirma.AOPKod;
-              ZSdmd.ZasilkyOBJ_EMAILS.AsString  := lFirma.SendingAdress;
+              ZSdmd.ZasilkyAOPKOD_OBJ.AsVariant := lc_Firma.AOPKod;
+              ZSdmd.ZasilkyOBJ_EMAILS.AsString  := lc_Firma.Email;
             end;
           end;
         finally
-          lFirma.Free;
+          lc_Firma.Free;
         end;
       end;
     3:

@@ -22,44 +22,7 @@ type
     Psc: string;
     Mesto: string end;
 
-    TAOPFirmaClass = class(TPersistent)private JeVybranyUzivatel: boolean;
-    procedure intFillValues;
-    function intSelectIDUser: string;
-    public
-      AOPKod    : string;
-      Nazev     : string;
-      Adresa1   : string;
-      Adresa2   : string;
-      Adresa3   : string;
-      Psc       : string;
-      Zeme      : string;
-      ZemeKod   : string;
-      ICO       : string;
-      DIC       : string;
-      Ucet_Cislo: string;
-      Ucet_Banka: string;
-      Fax       : string;
-      Telefon   : string;
-      GSM       : string;
-      SMSAdresa : string;
-      Email     : string;
-      SMSEmail  : string;
-      WWW       : string;
-      // SendType: TFaxMailType;
-      SendingAdress: string;
-
-      DisplayAdress: string;
-      Splatnost    : integer;
-      NaselAdresu  : boolean;
-      constructor CreateCustom(AZnackaAOP: string; AShowDialog: boolean);
-      procedure Clear;
-      function Execute(AShowDialog: boolean): boolean;
-      // function GetMailAdres: boolean;
-      function FillValues(AZnackaAOP: string): boolean;
-  end;
-
-  TAOPfrmModule = class(TjfsEvidenceModule)
-    psAOP: TrsPropSaver;
+    TAOPfrmModule = class(TjfsEvidenceModule)psAOP: TrsPropSaver;
     ActionList1: TActionList;
     actKTLZeme: TAction;
     actKTLSkupiny: TAction;
@@ -92,37 +55,37 @@ type
     procedure gbEvidenceModuleInitModule(Sender: TObject);
     procedure actBrowseExecute(Sender: TObject);
     procedure jfsEvidenceModuleFinalModule(Sender: TObject);
-    private
-      FgbAOPCopyList: string;
-      procedure SetgbAOPCopyList(const Value: string);
-      procedure repAopStatyPropertiesButtonClick(Sender: TObject; AButtonIndex: integer);
-      procedure repSkupinyButtonClick(Sender: TObject; AButtonIndex: integer);
-      procedure repStatusButtonClick(Sender: TObject; AButtonIndex: integer);
-      { Private declarations }
-    public
-      procedure ShowBrowse(AWhere: string);
-      // function ShowDetail(AAOPKod: string; Mode: TFormShowMode): string;
-      // function ShowJmenoDetail(AID: string; Mode: TFormShowMode): string;
-      function GetNewKeyIdValue(ARada: string): string;
+  private
+    FgbAOPCopyList: string;
+    procedure SetgbAOPCopyList(const Value: string);
+    procedure repAopStatyPropertiesButtonClick(Sender: TObject; AButtonIndex: integer);
+    procedure repSkupinyButtonClick(Sender: TObject; AButtonIndex: integer);
+    procedure repStatusButtonClick(Sender: TObject; AButtonIndex: integer);
+    { Private declarations }
+  public
+    procedure ShowBrowse(AWhere: string);
+    // function ShowDetail(AAOPKod: string; Mode: TFormShowMode): string;
+    // function ShowJmenoDetail(AID: string; Mode: TFormShowMode): string;
+    function GetNewKeyIdValue(ARada: string): string;
 
-      procedure PrintModule(ADefaultReport: boolean = false; AKeyIdValue: string = ''); override;
-      function GetDefaultReport: string;
+    procedure PrintModule(ADefaultReport: boolean = false; AKeyIdValue: string = ''); override;
+    function GetDefaultReport: string;
 
-      { Ostatni funkce }
-      procedure JMShowViewAOP(AZnacka: string);
+    { Ostatni funkce }
+    procedure JMShowViewAOP(AZnacka: string);
 
-      { New Katalogy }
-      function ShowKTLPsc(var AKodMista: TAOPMisto): boolean;
-      function KTLPscAppend(var AKodMista: TAOPMisto): boolean;
-      // function ShowKTLStaty(var AStat: string): boolean;
-      function HledejMesto(APSC: string): string;
-      { Ostatni }
-      function GetKommEmail(aAOPKod: string): string;
+    { New Katalogy }
+    function ShowKTLPsc(var AKodMista: TAOPMisto): boolean;
+    function KTLPscAppend(var AKodMista: TAOPMisto): boolean;
+    // function ShowKTLStaty(var AStat: string): boolean;
+    function HledejMesto(APSC: string): string;
+    { Ostatni }
+    function GetKommEmail(aAOPKod: string): string;
 
-      procedure repFirmyPropertiesButtonClick(Sender: TObject; AButtonIndex: integer);
-      procedure RefreshKatalogs;
-    published
-      property gbAOPCopyList: string read FgbAOPCopyList write SetgbAOPCopyList;
+    procedure repFirmyPropertiesButtonClick(Sender: TObject; AButtonIndex: integer);
+    procedure RefreshKatalogs;
+  published
+    property gbAOPCopyList: string read FgbAOPCopyList write SetgbAOPCopyList;
   end;
 
 function telNormPhone(AVolZeme: string; AVolUto: string; ATelCislo: string): string;
@@ -137,9 +100,9 @@ implementation
 uses
   variants, JclStrings, appdmduSystem, _frmuCustomBrowse, AOPdmdu, AOPfrmuBrowse, AOPfrmuPickUser,
   AOPfrmuEdit, fAOPSkupinyUnit, fAOPStatyUnit, appfrmuGlobal,
-  fAOPscUnit, jclMapi, AOPConstDefUnit, Devexptls,
+  fAOPscUnit, jclMapi, uAOPConstDefUnit, Devexptls,
   fKatalogyModul, uAppControler, uSendFaxMail, appReportModule, frxPreview, appIniOptionsUnit,
-  cxDBLookupEdit, cxLookupEdit, fStatusLook, appReportManagerForm;
+  cxDBLookupEdit, cxLookupEdit, fStatusLook, appReportManagerForm, uaopfirmaclass;
 
 {$R *.DFM}
 { Communications Functions }
@@ -163,47 +126,12 @@ begin
 
 end;
 
-constructor TAOPFirmaClass.CreateCustom(AZnackaAOP: string; AShowDialog: boolean);
-begin
-  inherited Create;
-  Clear;
-  AOPKod := AZnackaAOP;
-  Execute(AShowDialog);
-end;
-
 function GetAOPmodul: TAOPfrmModule;
 begin
   if not Assigned(AOPfrmModule) then
     Application.CreateForm(TAOPfrmModule, AOPfrmModule);
   Result := AOPfrmModule;
 
-end;
-
-procedure TAOPFirmaClass.Clear;
-begin
-  AOPKod        := EmptyStr;
-  Nazev         := EmptyStr;
-  Adresa1       := EmptyStr;
-  Adresa2       := EmptyStr;
-  Adresa3       := EmptyStr;
-  Psc           := EmptyStr;
-  Zeme          := EmptyStr;
-  ZemeKod       := EmptyStr;
-  ICO           := EmptyStr;
-  DIC           := EmptyStr;
-  Ucet_Cislo    := EmptyStr;
-  Ucet_Banka    := EmptyStr;
-  Fax           := EmptyStr;
-  Telefon       := EmptyStr;
-  GSM           := EmptyStr;
-  SMSAdresa     := EmptyStr;
-  Email         := EmptyStr;
-  SMSEmail      := EmptyStr;
-  WWW           := EmptyStr;
-  SendingAdress := EmptyStr;
-  Splatnost     := 14;
-  DisplayAdress := EmptyStr;
-  NaselAdresu   := false;
 end;
 
 { ****************************************************************
@@ -226,119 +154,6 @@ end;
   * Revisions:
   *
   ***************************************************************** }
-
-function TAOPFirmaClass.FillValues(AZnackaAOP: string): boolean;
-begin
-  Result := (AZnackaAOP <> '') and (AOPdmd.mod_OpenRecord(AZnackaAOP));
-  if Result then
-    intFillValues
-  else
-    Clear;
-
-end;
-
-procedure TAOPFirmaClass.intFillValues;
-begin
-  if AOPdmd.dtsAOP.RecordCount > 0 then
-  begin
-    NaselAdresu := true;
-    AOPKod      := AOPdmd.dtsAOPAOPKOD.AsVariant;
-    Nazev       := AOPdmd.dtsAOPNAZEV.AsString;
-    Adresa1     := AOPdmd.dtsAOPADRESA1.AsString;
-    Adresa2     := AOPdmd.dtsAOPADRESA2.AsString;
-    Adresa3     := AOPdmd.dtsAOPADRESA3.AsString;
-
-    DisplayAdress := Nazev;
-    if Adresa1 <> EmptyStr then
-      DisplayAdress := DisplayAdress + ',  ' + Adresa1;
-
-    if Adresa3 <> EmptyStr then
-      DisplayAdress := DisplayAdress + ',  ' + Adresa3;
-
-    Zeme       := AOPdmd.dtsAOPPOPISZEME.AsString;
-    ZemeKod    := AOPdmd.dtsAOPKODZEME.AsString;
-    Psc        := AOPdmd.dtsAOPPSC.AsString;
-    ICO        := AOPdmd.dtsAOPICO.AsString;
-    DIC        := AOPdmd.dtsAOPDIC.AsString;
-    Ucet_Cislo := AOPdmd.dtsAOPUCET.AsString;
-    Ucet_Banka := AOPdmd.dtsAOPBANKAKOD.AsString;
-    Splatnost  := AOPdmd.dtsAOPSPLATNOST.AsInteger;
-
-    if JeVybranyUzivatel then
-      Email := AOPdmd.dtsAOPJmenaEmail.AsString
-    else
-      Email := AOPdmd.dtsAOPEMAIL.AsString;
-
-    WWW := AOPdmd.dtsAOPWWW.AsString;
-
-    // Fax :=
-    // telNormPhone(
-    // AOPdmd.AOPKODTEL).AsString,
-    // AOPdmd.AOPUTO).AsString,
-    // AOPdmd.AOPFAX).AsString);
-
-    Fax     := AOPdmd.dtsAOPKODTEL.AsString + '-' + AOPdmd.dtsAOPFAX.AsString;
-    Telefon := AOPdmd.dtsAOPKODTEL.AsString + '-' + AOPdmd.dtsAOPTELEFON.AsString;
-
-    // Telefon :=
-    // telNormPhone(
-    // AOPdmd.AOPKODTEL).AsString,
-    // AOPdmd.AOPUTO).AsString,
-    // AOPdmd.AOPTELEFON).AsString);
-
-    GSM := AOPdmd.dtsAOPGSM.AsString;
-
-    SendingAdress := Email;
-  end;
-end;
-
-function TAOPFirmaClass.intSelectIDUser: string;
-var
-  frmTemp: TfrmAOPSelectUser;
-begin
-  Result  := '';
-  frmTemp := TfrmAOPSelectUser.Create(nil);
-  try
-    try
-
-      if AOPKod <> EmptyStr then
-      begin
-        frmTemp.MasterDs.DataSet.Locate(SAOPKEYFIELDNAME, AOPKod, []);
-      end;
-      if frmTemp.ShowModal = mrok then
-        Result := frmTemp.MasterDs.DataSet.FieldByName(SAOPKEYFIELDNAME).AsString;
-
-      JeVybranyUzivatel := frmTemp.IsSelectKontakt;
-
-      // SQLControler.ShowAllRecords;
-    except
-      raise;
-    end;
-
-  finally
-    frmTemp.Free;
-  end;
-end;
-
-function TAOPFirmaClass.Execute(AShowDialog: boolean): boolean;
-var
-  tmp: string;
-begin
-  if AShowDialog then
-    tmp := intSelectIDUser
-  else
-    tmp := AOPKod;
-
-  Result := (tmp <> EmptyStr) and AOPdmd.mod_OpenRecord(tmp);
-
-  if Result then
-    intFillValues;
-end;
-
-// function TAOPFirmaClass.GetMailAdres: boolean;
-// begin
-// //result :=
-// end;
 
 function TAOPfrmModule.GetNewKeyIdValue(ARada: string): string;
 begin
@@ -492,8 +307,7 @@ begin
   dsAopSkupiny.DataSet := AOPdmd.KTLSkupiny;
   dsAOPFirmy.DataSet   := AOPdmd.dtsAOPFirmy;
   dsAOPStatus.DataSet  := AOPdmd.dtsAopSU;
-  gbAOPCopyList := 'NAZEV;ADRESA1;ADRESA2;ADRESA3;PSC';
-  OnGetFrxSendAddress := mgGetAop;
+  gbAOPCopyList        := 'NAZEV;ADRESA1;ADRESA2;ADRESA3;PSC';
   Jf_SetLook2butons(repFirmy.Properties, repFirmyPropertiesButtonClick);
   Jf_SetLook2butons(repStaty.Properties, repAopStatyPropertiesButtonClick);
   Jf_SetLook2butons(repSkupiny.Properties, repSkupinyButtonClick);
@@ -622,7 +436,6 @@ end;
 procedure TAOPfrmModule.PrintModule(ADefaultReport: boolean; AKeyIdValue: string);
 begin
   AOPdmd.mod_OpenRecord(AKeyIdValue);
-  frrAop.Recipient.Clear;
   AOPdmd.ViewAOPJmena.active := true;
   if ADefaultReport then
     dmReport.ShowReport(DefaultReport, AOPfrmModule.frrAop)
@@ -632,7 +445,7 @@ end;
 
 procedure TAOPfrmModule.RefreshKatalogs;
 begin
-  if GetAOPdmd.dtsAOPFirmy.Active then
+  if GetAOPdmd.dtsAOPFirmy.active then
     GetAOPdmd.dtsAOPFirmy.Refresh;
 
 end;
@@ -644,7 +457,7 @@ begin
   case AButtonIndex of (* *)
     1:
       begin
-        lcDlg := TAOPfrmKTLZeme.Create(self);
+        lcDlg := TAOPfrmKTLZeme.Create(Self);
         if Assigned(Sender) and (TcxCustomDBLookupEdit(Sender).EditValue <> null) then
         begin
 
@@ -670,9 +483,9 @@ begin
   case AButtonIndex of (* *)
     1:
       begin
-        IntDopravce := TAOPFirmaClass.CreateCustom(vartostr(TcxCustomLookupEdit(Sender).EditValue), false);
+        IntDopravce := TAOPFirmaClass.Create(vartostr(TcxCustomLookupEdit(Sender).EditValue), true);
         try
-          if IntDopravce.Execute(true) then
+          if IntDopravce.NaselAdresu then
           begin
             TcxCustomDBLookupEdit(Sender).EditValue := IntDopravce.AOPKod;
             TcxCustomDBLookupEdit(Sender).PostEditValue;
@@ -712,7 +525,7 @@ begin
   case AButtonIndex of (* *)
     1:
       begin
-        lcDlg := TAOPfrmKTLSkupiny.Create(self);
+        lcDlg := TAOPfrmKTLSkupiny.Create(Self);
         if Assigned(Sender) and (TcxCustomDBLookupEdit(Sender).EditValue <> null) then
         begin
 

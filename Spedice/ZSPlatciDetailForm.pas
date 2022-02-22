@@ -81,12 +81,12 @@ type
     procedure actRecDeleteExecute(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure grdSrazkyExit(Sender: TObject);
-    private
-      { Private declarations }
-      procedure repFirmyClick(Sender: TObject; AButtonIndex: integer);
-    public
-      { Public declarations }
-      constructor Create(AOwner: TComponent); override;
+  private
+    { Private declarations }
+    procedure repFirmyClick(Sender: TObject; AButtonIndex: integer);
+  public
+    { Public declarations }
+    constructor Create(AOwner: TComponent); override;
   end;
 
 function GetPlatceDetail(AID: string): Boolean;
@@ -95,8 +95,8 @@ implementation
 
 uses
   variants, uVarClass, ZSdmdu, appfrmuGlobal, appdmduSystem, ZSfrmuModule, FVfrmuModule,
-  fMessageDlg, AOPdmdu, AOPfrmuModule, FVdmdu, ZSConstDefUnit, FVConstDefUnit, AOPConstDefUnit,
-  AOPfrmuEdit, AOPfrmuPickUser;
+  fMessageDlg, AOPdmdu, AOPfrmuModule, FVdmdu, ZSConstDefUnit, FVConstDefUnit, uAOPConstDefUnit,
+  AOPfrmuEdit, uaopfirmaclass;
 
 {$R *.DFM}
 
@@ -283,29 +283,31 @@ end;
 
 procedure TfrmPlatciDetail.repFirmyClick(Sender: TObject; AButtonIndex: integer);
 var
-  lFirma: TFirmaObject;
+  cFirma : TAOPFirmaClass;
+  lFirma : TAOPFirmaCustomClass;
+  sAopKod: string;
 begin
+  sAopKod := VarToStr(ZSdmd.ZAPlatciAOPKOD.AsVariant);
   case AButtonIndex of (* *)
     1:
       begin
-        lFirma        := TFirmaObject.Create;
-        lFirma.AopKod := VarToStr(ZSdmd.ZAPlatciAOPKOD.AsVariant);
+        cFirma := TAOPFirmaClass.Create(sAopKod, true);
         try
-          if AopGetKontakt(lFirma) then
+          if cFirma.NaselAdresu then
           begin
             SetEditsState;
-            ZSdmd.ZAPlatciAOPKOD.AsVariant    := lFirma.AopKod;
-            ZSdmd.ZAPlatciPLA_EMAILS.AsString := lFirma.SendingAdress;
+            ZSdmd.ZAPlatciAOPKOD.AsVariant    := cFirma.AopKod;
+            ZSdmd.ZAPlatciPLA_EMAILS.AsString := cFirma.Email;
           end;
 
         finally
-          lFirma.Free;
+          cFirma.Free;
         end;
       end;
     2:
       begin
-        lFirma        := TFirmaObject.Create;
-        lFirma.AopKod := VarToStr(ZSdmd.ZAPlatciAOPKOD.AsVariant);
+        lFirma        := TAOPFirmaCustomClass.Create;
+        lFirma.AopKod := sAopKod;
         try
           if lFirma.AopKod <> '' then
           begin
@@ -313,7 +315,7 @@ begin
             begin
               SetEditsState;
               ZSdmd.ZAPlatciAOPKOD.AsVariant    := lFirma.AopKod;
-              ZSdmd.ZAPlatciPLA_EMAILS.AsString := lFirma.SendingAdress;
+              ZSdmd.ZAPlatciPLA_EMAILS.AsString := lFirma.Email;
             end;
           end;
         finally

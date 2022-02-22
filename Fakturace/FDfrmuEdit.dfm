@@ -667,6 +667,9 @@ inherited FDfrmEdit: TFDfrmEdit
       object cxTabSheet1: TcxTabSheet
         Caption = 'Polo'#382'ky'
         ImageIndex = 0
+        ExplicitTop = 0
+        ExplicitWidth = 0
+        ExplicitHeight = 0
         object grdSrazky: TcxGrid
           Left = 0
           Top = 26

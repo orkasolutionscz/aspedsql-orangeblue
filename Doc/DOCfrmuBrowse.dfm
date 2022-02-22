@@ -10,9 +10,9 @@ inherited DocBrowseFrm: TDocBrowseFrm
   PixelsPerInch = 96
   TextHeight = 13
   inherited pnlBrowse: TPanel
-    Top = 49
+    Top = 50
     Width = 889
-    Height = 604
+    Height = 603
     ExplicitTop = 49
     ExplicitWidth = 889
     ExplicitHeight = 604
@@ -145,7 +145,7 @@ inherited DocBrowseFrm: TDocBrowseFrm
     AlwaysMerge = True
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
-    Font.Height = -11
+    Font.Height = -12
     Font.Name = 'Tahoma'
     Font.Style = []
     Categories.Strings = (
@@ -180,14 +180,14 @@ inherited DocBrowseFrm: TDocBrowseFrm
     DockControlHeights = (
       0
       0
-      49
+      50
       0)
     object dxBarManager1Bar1: TdxBar
       Caption = 'Z'#225'znam'
       CaptionButtons = <>
       DockedDockingStyle = dsTop
       DockedLeft = 0
-      DockedTop = 23
+      DockedTop = 24
       DockingStyle = dsTop
       FloatLeft = 487
       FloatTop = 205

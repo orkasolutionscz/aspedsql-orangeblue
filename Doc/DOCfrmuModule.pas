@@ -24,25 +24,25 @@ type
     procedure frrDocGetValue(const VarName: String; var Value: Variant);
     procedure rsPropUserAfterLoad(Sender: TObject);
     procedure rsPropUserAfterSave(Sender: TObject);
-    private
-      FgbDOCCopyList: string;
-      procedure SetgbDOCCopyList(const Value: string);
-      { Private declarations }
-    protected
-      { Protected declarations }
-    public
-      { Public declarations }
-      procedure PrintModule(ADefaultReport: boolean = false; AKeyIdValue: string = ''); override;
+  private
+    FgbDOCCopyList: string;
+    procedure SetgbDOCCopyList(const Value: string);
+    { Private declarations }
+  protected
+    { Protected declarations }
+  public
+    { Public declarations }
+    procedure PrintModule(ADefaultReport: boolean = false; AKeyIdValue: string = ''); override;
 
-      procedure ShowBrowse(AWhere: string);
-      function ShowDetail(AZnacka: string; Mode: TFormShowMode; AOwner: string = ''; AAOPKod: string = ''): string;
-      function GetNewKeyIdValue(ARada: string): string;
-      { Pohledy }
-      procedure ViewShowAOP(AZnacka: string);
-      // procedure ViewShowOwner(AOwner: string);
-      function GetDefaultReport:string;
-    published
-      property gbDOCCopyList: string read FgbDOCCopyList write SetgbDOCCopyList;
+    procedure ShowBrowse(AWhere: string);
+    function ShowDetail(AZnacka: string; Mode: TFormShowMode; AOwner: string = ''; AAOPKod: string = ''): string;
+    function GetNewKeyIdValue(ARada: string): string;
+    { Pohledy }
+    procedure ViewShowAOP(AZnacka: string);
+    // procedure ViewShowOwner(AOwner: string);
+    function GetDefaultReport: string;
+  published
+    property gbDOCCopyList: string read FgbDOCCopyList write SetgbDOCCopyList;
   end;
 
 var
@@ -53,7 +53,7 @@ implementation
 uses
   fMessageDlg, _frmuCustomBrowse, appdmduSystem, DOCdmdu, DOCfrmuBrowse,
   AOPfrmuModule, fDOCEditUnit, ZSdmdu, appunConst, DOCConstDefUnit, uAppControler, appReportManagerForm,
-  appReportModule, appIniOptionsUnit;
+  appReportModule, appIniOptionsUnit, uaopfirmaclass;
 
 {$R *.DFM}
 
@@ -77,7 +77,7 @@ begin
           DOCdmd.DOCOWNER.AsString := AOwner;
           if AAOPKod <> EmptyStr then
           begin
-            IntFirma := TAOPFirmaClass.CreateCustom(AAOPKod, false);
+            IntFirma := TAOPFirmaClass.Create(AAOPKod, false);
             try
               frm.FillAopAdresa(IntFirma);
             finally
@@ -97,7 +97,7 @@ function TDOCfrmModule.GetDefaultReport: string;
 begin
   if (DefaultReport = '') or (not FileExists(DefaultReport)) then
     DefaultReport := RMselectSestava(dmReport.GenEvidenceFolder(ModuleName), frrDoc);
-  Result := DefaultReport;
+  Result          := DefaultReport;
 end;
 
 function TDOCfrmModule.GetNewKeyIdValue(ARada: string): string;
@@ -154,9 +154,8 @@ end;
 procedure TDOCfrmModule.PrintModule(ADefaultReport: boolean; AKeyIdValue: string);
 begin
   DOCdmd.mod_OpenRecord(AKeyIdValue);
-  DOCfrmModule.frrDoc.Recipient.Clear;
-  DOCfrmModule.frrDoc.Recipient.SendAdress := DOCdmd.DOCDOCEMAILY.AsString;
-  DOCfrmModule.frrDoc.Recipient.Subject    := DOCdmd.DOCVEC.AsString + ' Naše znaèka: ' + DOCdmd.DOCZNACKA.AsString;
+  dmReport.frxMailExport.Address := DOCdmd.DOCDOCEMAILY.AsString;
+  dmReport.frxMailExport.Subject := DOCdmd.DOCVEC.AsString + ' Naše znaèka: ' + DOCdmd.DOCZNACKA.AsString;
 
   if ADefaultReport then
   begin

@@ -24,7 +24,6 @@ uses
 
 type
   TAOPBrowseFrm = class(TfrmModulBrowse)
-    actSendMail: TAction;
     rspForm: TrsPropSaver;
     pnlKontakty: TPanel;
     pgAOPInfo: TcxPageControl;
@@ -107,7 +106,6 @@ type
     rspSQL: TrsPropSaver;
     actZmenNaKontakt: TAction;
     dxBarButton2: TdxBarButton;
-    procedure actSendMailExecute(Sender: TObject);
     procedure actRecDetailExecute(Sender: TObject);
     procedure actRecNewExecute(Sender: TObject);
     procedure MasterDsDataChange(Sender: TObject; Field: TField);
@@ -134,7 +132,7 @@ implementation
 uses
   variants, uVarClass, fMessageDlg, AOPdmdu, jclMapi, AOPfrmuModule, appdmduSystem,
   DOCfrmuModule, DOCdmdu, FVdmdu, FVfrmuModule, FDdmdu, FDfrmuModule,
-  fAOPPrevodAdresyUnit, AOPConstDefUnit, appfrmuGlobal, fStatusLook, fKatalogyModul,
+  fAOPPrevodAdresyUnit, uAOPConstDefUnit, appfrmuGlobal, fStatusLook, fKatalogyModul,
   _frmuCustomLookup, AOPfrmuEdit, appReportModule, fAOPPrevedNaKontaktUnit;
 
 {$R *.DFM}
@@ -165,14 +163,6 @@ begin
 
   rspSQL.Active := true;
   rspSQL.LoadValues;
-end;
-
-procedure TAOPBrowseFrm.actSendMailExecute(Sender: TObject);
-begin
-  if trim(AOPdmd.AOPSeznamEMAIL.asstring) <> EmptyStr then
-    JclSimpleSendMail(AnsiString(AOPdmd.AOPSeznamEMAIL.asstring), '', '', '', )
-  else
-    DisplayError(SERR_AOP_EMAILCHYBIUDAJE, '');
 end;
 
 procedure TAOPBrowseFrm.actRecDetailExecute(Sender: TObject);

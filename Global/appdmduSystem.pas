@@ -226,7 +226,7 @@ uses
   fusers, appunConst, uCustomForms,
   _frmuCustomBrowse, IniFiles, appfrmuGlobal, appIniOptionsUnit, fNewNumsSetup,
   fGetCisRada, fGBLogin, uAppControler,
-  appfrauKomunikaceOptions, appfrauPathOptions, fAppOptions,
+  fKomunikaceOptions, appfrauPathOptions, fAppOptions,
   IB_Session, JclMapi, uSendFaxMail, ujfsExpr, fGlobalOptions, cxGridDBTableView
 
     ;

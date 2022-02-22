@@ -602,6 +602,7 @@ object dmdSystem: TdmdSystem
       'ULOGO3=ULOGO3')
     DataSet = Firma
     BCDToCurrency = False
+    DataSetOptions = []
     Left = 316
     Top = 52
   end

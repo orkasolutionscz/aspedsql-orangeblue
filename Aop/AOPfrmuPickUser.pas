@@ -40,7 +40,7 @@ uses
   cxStyles,
   cxGridCustomPopupMenu,
   cxGridPopupMenu,
-  AOPConstDefUnit,
+  uAOPConstDefUnit,
   frxClass,
   dxBarExtItems,
   cxGraphics,
@@ -52,7 +52,7 @@ uses
   cxDataStorage,
   cxEdit,
   cxNavigator,
-  cxDBData;
+  cxDBData, IBODataset, cxImageComboBox, cxPCdxBarPopupMenu, cxPC;
 
 type
   TfrmAOPSelectUser = class(TfrmCustomPick)
@@ -62,17 +62,7 @@ type
     tvViewAOPKOD: TcxGridDBColumn;
     tvViewNAZEV: TcxGridDBColumn;
     tvViewADRESA3: TcxGridDBColumn;
-    glvKontakty: TcxGridLevel;
-    tvKontakty: TcxGridDBTableView;
-    tvKontaktyID: TcxGridDBColumn;
-    tvKontaktyAOPKOD: TcxGridDBColumn;
-    tvKontaktyPRIJMENI: TcxGridDBColumn;
-    tvKontaktyJMENO: TcxGridDBColumn;
-    tvKontaktyEMAIL: TcxGridDBColumn;
-    tvKontaktyFAX: TcxGridDBColumn;
-    tvKontaktyMOBIL: TcxGridDBColumn;
     tvViewKODZEME: TcxGridDBColumn;
-    tvViewEMAIL: TcxGridDBColumn;
     tvViewSKUPINA: TcxGridDBColumn;
     tvViewJSOUKONTAKTY: TcxGridDBColumn;
     tvViewSTATEUSER: TcxGridDBColumn;
@@ -85,13 +75,61 @@ type
     dxbrManager1Bar: TdxBar;
     dxb1: TdxBarButton;
     tvViewCOLOR: TcxGridDBColumn;
-    tvViewFAX: TcxGridDBColumn;
-    tvViewGSM: TcxGridDBColumn;
     tvViewPSC: TcxGridDBColumn;
     tvViewADRESA1: TcxGridDBColumn;
     tvViewK1: TcxGridDBColumn;
     tvViewKOD_TIMO: TcxGridDBColumn;
     tvViewKOD_RAAL: TcxGridDBColumn;
+    dtsAOPLook: TIBOQuery;
+    dtsAOPLookPSC: TStringField;
+    dtsAOPLookAOPKOD: TStringField;
+    dtsAOPLookICO: TStringField;
+    dtsAOPLookNAZEV: TStringField;
+    dtsAOPLookADRESA1: TStringField;
+    dtsAOPLookADRESA3: TStringField;
+    dtsAOPLookKODZEME: TStringField;
+    dtsAOPLookSKUPINA: TStringField;
+    dtsAOPLookK1: TStringField;
+    dtsAOPLookKOD_TIMO: TStringField;
+    dtsAOPLookKOD_RAAL: TStringField;
+    dtsAOPLookSTATEUSER: TIntegerField;
+    dtsAOPLookDIC: TStringField;
+    dtsAOPLookJSOUKONTAKTY: TStringField;
+    dtsAOPLookCOLOR: TIntegerField;
+    dtsAOPLookBANKAKOD: TStringField;
+    dtsAOPLookSPLATNOST: TSmallintField;
+    dtsAOPLookUCET: TStringField;
+    dtsKontakty: TIBOQuery;
+    dtsKontaktyID: TIntegerField;
+    dtsKontaktyAOPKOD: TStringField;
+    dtsKontaktyPrijmeni: TStringField;
+    dtsKontaktyJmeno: TStringField;
+    dtsKontaktyEmail: TStringField;
+    dtsKontaktyFAX: TStringField;
+    dtsKontaktyMOBIL: TStringField;
+    dtsKontaktyTELEFON1: TStringField;
+    pgcDetaily: TcxPageControl;
+    tbsKontakty: TcxTabSheet;
+    grdKontakty: TcxGrid;
+    tv1: TcxGridDBTableView;
+    cxGridDBColumn1: TcxGridDBColumn;
+    cxGridDBColumn2: TcxGridDBColumn;
+    cxGridDBColumn3: TcxGridDBColumn;
+    cxGridDBColumn4: TcxGridDBColumn;
+    tvKontaktyFUNKCE: TcxGridDBColumn;
+    tvKontaktyTELEFON1: TcxGridDBColumn;
+    tvKontaktyTELEFON2: TcxGridDBColumn;
+    cxGridDBColumn5: TcxGridDBColumn;
+    cxGridDBColumn6: TcxGridDBColumn;
+    tvKontaktyCOMMTYP: TcxGridDBColumn;
+    tvKontaktyISVYCHOZI: TcxGridDBColumn;
+    glKontaktyLevel1: TcxGridLevel;
+    dckKontakty: TdxBarDockControl;
+    tbsUcty: TcxTabSheet;
+    dtsAOPLookWWW: TStringField;
+    dtsAOPLookADRESA2: TStringField;
+    dtsAOPLookZEME_POPIS: TStringField;
+    dtsKontaktyISVYCHOZI: TStringField;
     procedure TabControl1Change(Sender: TObject);
     procedure actSQLCancelExecute(Sender: TObject);
     procedure actRecNewExecute(Sender: TObject);
@@ -100,17 +138,11 @@ type
     procedure actVybratExecute(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure actRestoreGridsExecute(Sender: TObject);
-    procedure jfsCustomMDIShow(Sender: TObject);
-    procedure dxb1Click(Sender: TObject);
-    procedure actGridStyleExecute(Sender: TObject);
     procedure MasterDsDataChange(Sender: TObject; Field: TField);
     procedure tvViewStylesGetContentStyle(Sender: TcxCustomGridTableView; ARecord: TcxCustomGridRecord; AItem: TcxCustomGridTableItem; var AStyle: TcxStyle);
   private
     FSelectKontakt: boolean;
-    FGetAdresa    : string;
-    FMs1, FMs2    : TMemoryStream;
-
-    function IsSelectedKontakty: boolean;
+    FMs1          : TMemoryStream;
     { Private declarations }
   public
     { Public declarations }
@@ -119,21 +151,18 @@ type
     property IsSelectKontakt: boolean read FSelectKontakt;
   end;
 
-function mgGetAop: TfrxCustomSendingAddress;
-
-function AopGetKontakt(var aFirma: TFirmaObject): boolean;
 
 implementation
 
 uses
   appdmduSystem,
   variants,
-  AOPdmdu,
   AOPfrmuModule,
   fKatalogyModul,
   appfrmuGlobal,
   uSendFaxMail,
   AOPfrmuEdit,
+
   fGetGridStyle;
 
 {$R *.DFM}
@@ -141,49 +170,6 @@ uses
 var
   lcAOPKod: string; // Pomocna promenna pro editaci detailu AOP
 
-function mgGetAop: TfrxCustomSendingAddress;
-var
-  aFirmaInfo: TFirmaObject;
-begin
-  Result     := nil;
-  aFirmaInfo := TFirmaObject.Create;
-
-  try
-    if AopGetKontakt(aFirmaInfo) then
-    begin
-      Result            := TfrxCustomSendingAddress.Create;
-      Result.SendAdress := aFirmaInfo.SendingAdress;
-      // Result.SendType           := dlg.GetTyp;
-    end;
-  finally
-    aFirmaInfo.Free;
-  end;
-end;
-
-function AopGetKontakt(var aFirma: TFirmaObject): boolean;
-var
-  dlg: TfrmAOPSelectUser;
-begin
-  dlg := TfrmAOPSelectUser.Create(nil);
-  try
-    dlg.glvKontakty.visible := true;
-    dlg.MasterDs.DataSet.Locate('AOPKOD', aFirma.AopKod, []);
-
-    Result := (dlg.ShowModal = mrOk);
-
-    if Result then
-    begin
-      aFirma := AOPdmd.GetAopInfo(AOPdmd.dtsAOPLookAOPKOD.AsString);
-
-      if dlg.IsSelectedKontakty then
-        aFirma.SendingAdress := AOPdmd.dtsKontaktyEmail.AsString
-      else
-        aFirma.SendingAdress := AOPdmd.dtsAOPLookEMAIL.AsString;
-    end;
-  finally
-    dlg.Free;
-  end;
-end;
 
 constructor TfrmAOPSelectUser.Create(AOwner: TComponent);
 var
@@ -192,18 +178,12 @@ const
   sTabABC = '*ABC»DœEFGHIJKLMNOPQRÿSäTçUVWXYZé1234567890';
 begin
   inherited Create(AOwner);
-  FSelectKontakt               := false;
-  FMs1                         := TMemoryStream.Create;
-  FMs2                         := TMemoryStream.Create;
-  tvKontakty.Styles.StyleSheet := dmdGlobal.ModStyleSheet;
+  FSelectKontakt := false;
+  FMs1           := TMemoryStream.Create;
   tvView.StoreToStream(FMs1);
-  tvKontakty.StoreToStream(FMs2);
-  SqlControler.DataSet := AOPdmd.dtsAOPLook;
-  glvKontakty.visible  := true;
-  MasterDs.DataSet     := SqlControler.DataSet;
-  dsKontakty.DataSet   := AOPdmd.dtsKontakty;
+  SqlControler.DataSet := dtsAOPLook;
+  dsKontakty.DataSet   := dtsKontakty;
   ReStoreViewSettings(tvView);
-  ReStoreViewSettings(tvKontakty);
 
   // NativeIncSearch               := True;
 
@@ -260,21 +240,16 @@ end;
 
 procedure TfrmAOPSelectUser.actRecNewExecute(Sender: TObject);
 begin
-  if IsSelectedKontakty then
-    AOPdmd.dtsKontakty.Insert
-  else
+  lcAOPKod := '';
+
+  if AopGetDetail(lcAOPKod, True) then
   begin
-    lcAOPKod := '';
+    actRecRefresh.Execute;
 
-    if AopGetDetail(lcAOPKod, true) then
+    if dtsAOPLook.Locate(SAOPKEYFIELDNAME, lcAOPKod, []) = false then
     begin
-      actRecRefresh.Execute;
-
-      if MasterDs.DataSet.Locate(SAOPKEYFIELDNAME, lcAOPKod, []) = false then
-      begin
-        SqlControler.ShowAllRecords;
-        SqlControler.DataSet.Locate(SAOPKEYFIELDNAME, lcAOPKod, []);
-      end;
+      SqlControler.ShowAllRecords;
+      dtsAOPLook.Locate(SAOPKEYFIELDNAME, lcAOPKod, []);
     end;
   end;
 end;
@@ -287,40 +262,22 @@ end;
 
 procedure TfrmAOPSelectUser.actRecDetailExecute(Sender: TObject);
 begin
-  lcAOPKod := AOPdmd.dtsAOPLookAOPKOD.AsString;
+  lcAOPKod := dtsAOPLookAOPKOD.AsString;
   if AopGetDetail(lcAOPKod) then
   begin
     actRecRefresh.Execute;
-    if lcAOPKod <> AOPdmd.dtsAOPLookAOPKOD.AsString then
-      AOPdmd.dtsAOPLook.Locate('AOPKOD', lcAOPKod, []);
+    if lcAOPKod <> dtsAOPLookAOPKOD.AsString then
+      dtsAOPLook.Locate('AOPKOD', lcAOPKod, []);
   end;
 end;
 
 procedure TfrmAOPSelectUser.actVybratExecute(Sender: TObject);
 begin
-  FSelectKontakt := IsSelectedKontakty;
-  // NeedPost;
-  if TcxCustomGridView(cxGrid1.FocusedView) = tvView then
-  begin
-    FGetAdresa := AOPdmd.dtsAOPLookEMAIL.AsString;
-  end
-  else
-  begin
-    FGetAdresa := AOPdmd.dtsKontaktyEmail.AsString;
-  end;
-
   ModalResult := mrOk;
-
-end;
-
-function TfrmAOPSelectUser.IsSelectedKontakty: boolean;
-begin
-  Result := (cxGrid1.FocusedView = tvKontakty);
 end;
 
 procedure TfrmAOPSelectUser.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
-  StoreViewSettings(tvKontakty);
   StoreViewSettings(tvView);
   inherited;
 
@@ -329,7 +286,6 @@ end;
 destructor TfrmAOPSelectUser.Destroy;
 begin
   FreeAndNil(FMs1);
-  FreeAndNil(FMs2);
   inherited;
 
 end;
@@ -338,39 +294,15 @@ procedure TfrmAOPSelectUser.actRestoreGridsExecute(Sender: TObject);
 begin
   FMs1.Position := 0;
   tvView.RestoreFromStream(FMs1);
-
-  FMs2.Position := 0;
-  tvKontakty.RestoreFromStream(FMs2);
-
-end;
-
-procedure TfrmAOPSelectUser.jfsCustomMDIShow(Sender: TObject);
-begin
-  inherited;
-  dsKontakty.DataSet.active := glvKontakty.visible;
-
-end;
-
-procedure TfrmAOPSelectUser.dxb1Click(Sender: TObject);
-begin
-  tvKontakty.Styles.StyleSheet := GetUsersStyleSheet(tvKontakty.Styles.StyleSheet);
-
-end;
-
-procedure TfrmAOPSelectUser.actGridStyleExecute(Sender: TObject);
-begin
-  inherited;
-  tvKontakty.Styles.StyleSheet := tvView.Styles.StyleSheet;
-
 end;
 
 procedure TfrmAOPSelectUser.MasterDsDataChange(Sender: TObject; Field: TField);
 begin
   if Field = nil then
   begin
-    AOPdmd.dtsKontakty.Close;
-    AOPdmd.dtsKontakty.ParamByName('AOPKOD').AsString := MasterDs.DataSet.FieldByName('AOPKOD').AsString;
-    AOPdmd.dtsKontakty.Open;
+    dtsKontakty.Close;
+    dtsKontakty.ParamByName('AOPKOD').AsString := dtsAOPLookAOPKOD.AsString;
+    dtsKontakty.Open;
   end;
 
 end;

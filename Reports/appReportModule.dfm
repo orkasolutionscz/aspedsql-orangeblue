@@ -43,6 +43,7 @@ object dmReport: TdmReport
     OverwritePrompt = False
     DataOnly = False
     PictureType = gpPNG
+    OpenAfterExport = False
     Wysiwyg = True
     Creator = 'FastReport http://www.fast-report.com'
     SuppressPageHeadersFooters = False
@@ -59,6 +60,9 @@ object dmReport: TdmReport
     DataOnly = False
     OnBeginExport = frxPDFMailBeginExport
     Compressed = False
+    EmbedFontsIfProtected = False
+    InteractiveFormsFontSubset = 'A-Z,a-z,0-9,#43-#47 '
+    OpenAfterExport = False
     PrintOptimized = False
     Outline = False
     Background = False
@@ -74,6 +78,9 @@ object dmReport: TdmReport
     FitWindow = False
     CenterWindow = False
     PrintScaling = False
+    PdfA = False
+    PDFStandard = psNone
+    PDFVersion = pv17
     Left = 452
     Top = 276
   end
@@ -102,6 +109,7 @@ object dmReport: TdmReport
     EmptyLines = True
     Print = False
     PictureType = gpPNG
+    Outline = False
     Left = 452
     Top = 188
   end
@@ -168,24 +176,25 @@ object dmReport: TdmReport
     Top = 364
   end
   object frxMailExport: TfrxMailExport
+    ShowDialog = False
     UseFileCache = True
     ShowProgress = True
     OverwritePrompt = False
     DataOnly = False
     OnBeginExport = frxMailExportBeginExport
-    ShowExportDialog = True
-    FromMail = 'orka@lmss.cz'
+    ShowExportDialog = False
+    FromMail = 'lmsdebug@rapidnet.cz'
     FromName = 'Jiri Fait'
-    FromCompany = 'LM STEEL'
-    SmtpHost = 'mail.lmss.cz'
+    FromCompany = 'ORKA Solutions'
     SmtpPort = 25
-    Login = 'orka@lmss.cz'
     Password = 'orka'
     UseIniFile = True
     TimeOut = 60
     ConfurmReading = False
     OnSendMail = frxMailExportSendMail
-    UseMAPI = True
+    OnAfterSendMail = frxMailExportAfterSendMail
+    UseMAPI = MAPI
+    MAPISendFlag = 0
     Left = 100
     Top = 276
   end
@@ -209,6 +218,8 @@ object dmReport: TdmReport
     Frames = False
     EmptyLines = False
     OEMCodepage = False
+    UTF8 = False
+    OpenAfterExport = False
     DeleteEmptyColumns = True
     Left = 276
     Top = 364
@@ -220,13 +231,15 @@ object dmReport: TdmReport
     DataOnly = False
     Separator = ';'
     OEMCodepage = False
+    UTF8 = False
+    OpenAfterExport = False
     NoSysSymbols = True
     ForcedQuotes = False
     Left = 540
     Top = 100
   end
   object frrXXX: TfrxReport
-    Version = '4.15'
+    Version = '2022.1.3'
     DotMatrixReport = False
     EngineOptions.MaxMemSize = 10000000
     IniFile = '\Software\LMSS\Fast Reports'
@@ -254,6 +267,8 @@ object dmReport: TdmReport
       PaperWidth = 210.000000000000000000
       PaperHeight = 297.000000000000000000
       PaperSize = 9
+      Frame.Typ = []
+      MirrorMode = []
     end
   end
   object frxODSExport1: TfrxODSExport
@@ -262,6 +277,7 @@ object dmReport: TdmReport
     OverwritePrompt = False
     DataOnly = False
     PictureType = gpPNG
+    OpenAfterExport = False
     Background = True
     Creator = 'FastReport'
     Language = 'en'
@@ -275,6 +291,7 @@ object dmReport: TdmReport
     OverwritePrompt = False
     DataOnly = False
     PictureType = gpPNG
+    OpenAfterExport = False
     Background = True
     Creator = 'FastReport'
     Language = 'en'
@@ -293,6 +310,9 @@ object dmReport: TdmReport
     OverwritePrompt = False
     DataOnly = False
     Compressed = False
+    EmbedFontsIfProtected = False
+    InteractiveFormsFontSubset = 'A-Z,a-z,0-9,#43-#47 '
+    OpenAfterExport = False
     PrintOptimized = False
     Outline = False
     Background = False
@@ -308,7 +328,57 @@ object dmReport: TdmReport
     FitWindow = False
     CenterWindow = False
     PrintScaling = False
+    PdfA = False
+    PDFStandard = psNone
+    PDFVersion = pv17
     Left = 540
     Top = 276
+  end
+  object dtsGetReportVar: TIBOQuery
+    DatabaseName = 'fbAspedSql'
+    DeleteSQL.Strings = (
+      'DELETE FROM SYSVARSGLB SYSVARSGLB'
+      'WHERE'
+      '   GLBVARNAME = :OLD_GLBVARNAME')
+    EditSQL.Strings = (
+      'UPDATE SYSVARSGLB SYSVARSGLB SET'
+      '   SYSVARSGLB.GLBVARNAME = :GLBVARNAME, /*PK*/'
+      '   SYSVARSGLB.VARVALUE = :VARVALUE'
+      'WHERE'
+      '   GLBVARNAME = :OLD_GLBVARNAME')
+    IB_Connection = dmdSystem.IBOMainDB
+    InsertSQL.Strings = (
+      'INSERT INTO SYSVARSGLB('
+      '   GLBVARNAME, /*PK*/'
+      '   VARVALUE)'
+      'VALUES ('
+      '   :GLBVARNAME,'
+      '   :VARVALUE)')
+    PreparedEdits = True
+    PreparedInserts = False
+    RecordCountAccurate = True
+    SQL.Strings = (
+      'SELECT'
+      '     GLBVARNAME'
+      '     , VARVALUE'
+      'FROM SYSVARSGLB'
+      'WHERE VARSECTION = '#39'REPORTS'#39)
+    FieldOptions = []
+    Left = 624
+    Top = 368
+    object dtsGetReportVarGLBVARNAME: TStringField
+      DisplayLabel = 'Prom'#283'nn'#225
+      DisplayWidth = 30
+      FieldName = 'GLBVARNAME'
+      Required = True
+      Size = 100
+    end
+    object dtsGetReportVarVARVALUE: TMemoField
+      DisplayLabel = 'Hodnota'
+      FieldName = 'VARVALUE'
+      Required = True
+      BlobType = ftMemo
+      Size = 2500
+    end
   end
 end

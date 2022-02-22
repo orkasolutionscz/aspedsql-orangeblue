@@ -185,7 +185,7 @@ uses
   appGenIdUnit, uAppControler, appReportModule, appIniOptionsUnit, appReportManagerForm,
   fZSEditLayout,
   fZSEdit,
-  appfrmuGlobal, fZSSablony;
+  appfrmuGlobal, fZSSablony, uaopfirmaclass;
 
 const
   rkEn_ZrusitZSFV     = 'Povolit.ruseni.vazby.ZS-FV';
@@ -302,7 +302,7 @@ var
   aNewsId: string;
 begin
 
-  cFirma := TAOPFirmaClass.CreateCustom(AAopKod, false);
+  cFirma := TAOPFirmaClass.Create(AAopKod, false);
   try
 
     with ZSdmd do
@@ -332,7 +332,7 @@ begin
       DOCdmd.DOCVEC.AsString      := format(sAvizoNakladky, [ZasilkyZASILKA.AsString]);
       DOCdmd.DOCVYRIZUJE.AsString := jfaUserInfo.UserName;
       DOCdmd.DOCDTEXT.Assign(Lines);
-      DOCdmd.DOCDOCEMAILY.AsString := cFirma.SendingAdress;
+      DOCdmd.DOCDOCEMAILY.AsString := cFirma.Email;
 
       DOCdmd.DOCCREAID.AsString := jfaUserInfo.UserZnacka;
 
@@ -647,7 +647,7 @@ begin
   end
   else
   begin
-    frrZS.Recipient.Clear;
+    //frrZS.Recipient.Clear;
     dmReport.ShowManager(dmReport.GenEvidenceFolder(ModuleName), frrZS);
   end;
 end;
@@ -676,16 +676,15 @@ begin
   result := (gbZSTiskObjednavka <> '');
   if result then
   begin
-    frrZS.Recipient.RecipientName := ''; // ZSdmd.ZasilkyD_Nazev.AsString;
     if gbAutoFillEmail then
-      frrZS.Recipient.SendAdress := ZSdmd.ZasilkyDOP_EMAILS.AsString
+      dmReport.frxMailExport.Address := ZSdmd.ZasilkyDOP_EMAILS.AsString
     else
-      frrZS.Recipient.SendAdress := '';
+      dmReport.frxMailExport.Address := '';
 
     iMerger.Lines.Text := gbZsTemplSubjektObj;
     iMerger.Prepare;
     iMerger.Merge;
-    frrZS.Recipient.Subject := iMerger.MergedLines[0]; // 'Objednávka pøepravy : ' + ZSdmd.ZasilkyZASILKA.AsString;
+    dmReport.frxMailExport.Subject := iMerger.MergedLines[0]; // 'Objednávka pøepravy : ' + ZSdmd.ZasilkyZASILKA.AsString;
   end;
 end;
 
@@ -697,9 +696,8 @@ begin
   result := (gbZSTiskPotvrzeni <> '');
   if result then
   begin
-    frrZS.Recipient.RecipientName := ''; // ZSdmd.ZasilkyP_Nazev.AsString;
-    frrZS.Recipient.SendAdress    := ZSdmd.ZasilkyOBJ_EMAILS.AsString;
-    frrZS.Recipient.Subject       := 'Potvrzení objednávky : ' + ZSdmd.ZasilkyZASILKA.AsString;
+    dmReport.frxMailExport.Address    := ZSdmd.ZasilkyOBJ_EMAILS.AsString;
+    dmReport.frxMailExport.Subject       := 'Potvrzení objednávky : ' + ZSdmd.ZasilkyZASILKA.AsString;
   end;
 
 end;

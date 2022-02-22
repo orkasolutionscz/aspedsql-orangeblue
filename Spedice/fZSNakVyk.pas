@@ -66,21 +66,21 @@ type
     { Private declarations }
   public
     { Public declarations }
-    constructor Create(AOwner:TComponent);override;
+    constructor Create(AOwner: TComponent); override;
   end;
-
 
 implementation
 
 uses ZSdmdu, ZSfrmuModule, appfrmuGlobal, appdmduSystem, ZSfrmuVyberNakVyk,
-     AOPfrmuModule,  fMessageDlg, AOPConstDefUnit, AOPfrmuPickUser, uAppUtils, uCustomForms;
+  AOPfrmuModule, fMessageDlg, uAOPConstDefUnit, AOPfrmuPickUser, uAppUtils,
+   uCustomForms, uaopfirmaclass;
 
 {$R *.DFM}
 
 procedure TfrmZSNakVyk.actVybratMistoExecute(Sender: TObject);
 var
   // dt: TZSNakVykMisto;
-  dlg :TZSfrmVyberNakVyk;
+  dlg: TZSfrmVyberNakVyk;
 begin
   dlg := TZSfrmVyberNakVyk.Create(nil);
   try
@@ -88,10 +88,10 @@ begin
     if dlg.ShowModal = mrOk then
     begin
       SetEditsState;
-      ZSdmd.ZAPohybyADRESA3.AsString    := ZSdmd.sqPohybyADRESA3.AsString;
-      ZSdmd.ZAPohybyPSC.AsString        := ZSdmd.sqPohybyPSC.AsString;
-      ZSdmd.ZAPohybyZEMEKOD.AsVariant   := ZSdmd.sqPohybyZEMEKOD.AsVariant;
-      ZSdmd.ZAPohybyAdresaPopis.Assign( ZSdmd.sqPohybyAdresaPopis);
+      ZSdmd.ZAPohybyADRESA3.AsString  := ZSdmd.sqPohybyADRESA3.AsString;
+      ZSdmd.ZAPohybyPSC.AsString      := ZSdmd.sqPohybyPSC.AsString;
+      ZSdmd.ZAPohybyZEMEKOD.AsVariant := ZSdmd.sqPohybyZEMEKOD.AsVariant;
+      ZSdmd.ZAPohybyAdresaPopis.Assign(ZSdmd.sqPohybyAdresaPopis);
       ZSdmd.ZAPohybySPOJENI.Assign(ZSdmd.sqPohybySPOJENI);
     end;
   finally
@@ -105,16 +105,14 @@ begin
   inherited Create(AOwner);
   // LoadToolbars;
 
-  dsZaznam.DataSet                := ZSdmd.ZAPohyby;
-  cbZeme.RepositoryItem           := AOPfrmModule.repStatyShort;
-  cbPohybTyp.RepositoryItem       := dmdGlobal.repZSPohyby;
+  dsZaznam.DataSet          := ZSdmd.ZAPohyby;
+  cbZeme.RepositoryItem     := AOPfrmModule.repStatyShort;
+  cbPohybTyp.RepositoryItem := dmdGlobal.repZSPohyby;
 
   if dmdSystem.gbAdresa3UpperCase then
     edAdresa3.Properties.CharCase := ecUpperCase
   else
-    edAdresa3.Properties.CharCase := ecNormal  ;
-
-
+    edAdresa3.Properties.CharCase := ecNormal;
 
 end;
 
@@ -122,9 +120,9 @@ procedure TfrmZSNakVyk.actUlozitSmerExecute(Sender: TObject);
 var
   tmpMisto: TAOPMisto;
 begin
-  tmpMisto.KodZeme      := ZSdmd.ZAPohybyZEMEKOD.AsString;
-  tmpMisto.Psc          := ZSdmd.ZAPohybyPSC.AsString;
-  tmpMisto.Mesto        := ZSdmd.ZAPohybyADRESA3.AsString;
+  tmpMisto.KodZeme := ZSdmd.ZAPohybyZEMEKOD.AsString;
+  tmpMisto.Psc     := ZSdmd.ZAPohybyPSC.AsString;
+  tmpMisto.Mesto   := ZSdmd.ZAPohybyADRESA3.AsString;
 
   if (trim(tmpMisto.KodZeme) = '') or (trim(tmpMisto.Psc) = '') or (trim(tmpMisto.Mesto) = '') then
     DisplayError(SERR_AOP_SMER_NOTCOMPLETE)
@@ -137,44 +135,50 @@ end;
 
 procedure TfrmZSNakVyk.actVybratAOPExecute(Sender: TObject);
 var
-  cFirma: TFirmaObject;
-  tmpAdr: string;
-  tmpAdrList: TStringList;
+  cFirma           : TAOPFirmaClass;
+  tmpAdr, lc_aopkod: string;
+  tmpAdrList       : TStringList;
 begin
-  cFirma                := TFirmaObject.Create;
-  tmpAdrList            := TStringList.create;
+  lc_aopkod  := '';
+  cFirma     := TAOPFirmaClass.Create(lc_aopkod, True);
+  tmpAdrList := TStringList.Create;
 
   try
-    if AopGetKontakt( cFirma) then
+    if cFirma.NaselAdresu then
     begin
       tmpAdrList.clear;
       if ZSfrmModule.gbPohybArdesaAsLine then
       begin
-        if trim(cFirma.Nazev)   <> emptystr then tmpAdr := cFirma.Nazev;
-        if trim(cFirma.Adresa1) <> emptystr then strAddDelimeted(tmpAdr, cFirma.Adresa1, ', ');
-        if trim(cFirma.Adresa2) <> emptystr then strAddDelimeted(tmpAdr, cFirma.Adresa2, ', ');
+        if trim(cFirma.Nazev) <> emptystr then
+          tmpAdr := cFirma.Nazev;
+        if trim(cFirma.Adresa1) <> emptystr then
+          strAddDelimeted(tmpAdr, cFirma.Adresa1, ', ');
+        if trim(cFirma.Adresa2) <> emptystr then
+          strAddDelimeted(tmpAdr, cFirma.Adresa2, ', ');
 
         tmpAdrList.add(tmpAdr);
       end
       else
       begin
-        if trim(cFirma.Nazev)   <> emptystr then tmpAdrList.add(cFirma.Nazev);
-        if trim(cFirma.Adresa1) <> emptystr then tmpAdrList.add(cFirma.Adresa1);
-        if trim(cFirma.Adresa2) <> emptystr then tmpAdrList.add(cFirma.Adresa2);
+        if trim(cFirma.Nazev) <> emptystr then
+          tmpAdrList.add(cFirma.Nazev);
+        if trim(cFirma.Adresa1) <> emptystr then
+          tmpAdrList.add(cFirma.Adresa1);
+        if trim(cFirma.Adresa2) <> emptystr then
+          tmpAdrList.add(cFirma.Adresa2);
       end;
 
       SetEditsState;
       ZSdmd.ZAPohybyAdresaPopis.Assign(tmpAdrList);
 
-      ZSdmd.ZAPohybyPSC.AsString        := cFirma.Psc;
-      ZSdmd.ZAPohybyADRESA3.AsString    := cFirma.Adresa3;
-      ZSdmd.ZAPohybyZEMEKOD.AsVariant   := cFirma.ZemeKod;
+      ZSdmd.ZAPohybyPSC.AsString      := cFirma.Psc;
+      ZSdmd.ZAPohybyADRESA3.AsString  := cFirma.Adresa3;
+      ZSdmd.ZAPohybyZEMEKOD.AsVariant := cFirma.ZemeKod;
     end;
-
 
   finally
     tmpAdrList.free;
-    cFirma.Free;
+    cFirma.free;
   end;
 end;
 
@@ -182,14 +186,14 @@ procedure TfrmZSNakVyk.actVybratSmerovkuExecute(Sender: TObject);
 var
   tmpMisto: TAOPMisto;
 begin
-  tmpMisto.KodZeme      := ZSdmd.ZAPohybyZEMEKOD.AsVariant;
-  tmpMisto.Psc          := ZSdmd.ZAPohybyPSC.AsString;
-  tmpMisto.Mesto        := ZSdmd.ZAPohybyADRESA3.AsString;
+  tmpMisto.KodZeme := ZSdmd.ZAPohybyZEMEKOD.AsVariant;
+  tmpMisto.Psc     := ZSdmd.ZAPohybyPSC.AsString;
+  tmpMisto.Mesto   := ZSdmd.ZAPohybyADRESA3.AsString;
   if AOPfrmModule.ShowKTLPsc(tmpMisto) then
   begin
     SetEditsState;
     ZSdmd.ZAPohybyZEMEKOD.AsVariant := tmpMisto.KodZeme;
-    ZSdmd.ZAPohybyPSC.AsString      := tmpMisto.psc;
+    ZSdmd.ZAPohybyPSC.AsString      := tmpMisto.Psc;
     ZSdmd.ZAPohybyADRESA3.AsString  := tmpMisto.Mesto;
   end;
 end;
@@ -203,13 +207,13 @@ end;
 
 procedure TfrmZSNakVyk.actRecCopyExecute(Sender: TObject);
 var
-  lcData:TIBOQuery;
+  lcData: TIBOQuery;
 begin
   // pripravime si kopii datasetu
-  lcData                                := dmdSystem.CreateWorkDataSet;
+  lcData := dmdSystem.CreateWorkDataSet;
   try
-    lcData.SQL.Text                       := 'SELECT * FROM ZSNAKVYK WHERE ID = :ID';
-    lcData.ParamByName('ID').AsInteger    := ZSdmd.ZAPohybyID.AsInteger;
+    lcData.SQL.Text                    := 'SELECT * FROM ZSNAKVYK WHERE ID = :ID';
+    lcData.ParamByName('ID').AsInteger := ZSdmd.ZAPohybyID.AsInteger;
     lcData.Open;
 
     ZSdmd.ZAPohyby.Insert;
@@ -225,9 +229,9 @@ procedure TfrmZSNakVyk.actRecordMove(Sender: TObject);
 begin
   inherited;
   if Sender = actRecPrior then
-    zsdmd.ZAPohyby.prior
+    ZSdmd.ZAPohyby.prior
   else if Sender = actRecNext then
-    zsdmd.ZAPohyby.next;
+    ZSdmd.ZAPohyby.next;
 end;
 
 end.

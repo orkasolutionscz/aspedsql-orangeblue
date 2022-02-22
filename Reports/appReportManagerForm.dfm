@@ -38,6 +38,9 @@ object appReportManagerFrm: TappReportManagerFrm
     object cxTabSheet1: TcxTabSheet
       Caption = 'Prehled sestav'
       ImageIndex = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Label2: TLabel
         Left = 10
         Top = 12
@@ -297,7 +300,6 @@ object appReportManagerFrm: TappReportManagerFrm
       Caption = 'V'#253'choz'#237' sestava'
       Hint = 'Ozna'#269'it sestavu jako v'#253'choz'#237
       ImageIndex = 5
-      OnExecute = actSetDefaultReportExecute
     end
     object actPrintReport: TAction
       Caption = 'Tisknout'
@@ -341,12 +343,6 @@ object appReportManagerFrm: TappReportManagerFrm
     Images = ilButtons
     Left = 324
     Top = 60
-    object Vchozsestava1: TMenuItem
-      Action = actSetDefaultReport
-    end
-    object N1: TMenuItem
-      Caption = '-'
-    end
     object Upravit1: TMenuItem
       Action = actEditReport
     end
@@ -368,7 +364,7 @@ object appReportManagerFrm: TappReportManagerFrm
     Left = 148
     Top = 60
     Bitmap = {
-      494C010117003000180011001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010117003000200011001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000440000006000000001002000000000000066
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000008484840084848400000000000000
@@ -1231,7 +1227,7 @@ object appReportManagerFrm: TappReportManagerFrm
     Left = 236
     Top = 60
     Bitmap = {
-      494C010107001800180010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010107001800200010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000002000000001002000000000000020
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

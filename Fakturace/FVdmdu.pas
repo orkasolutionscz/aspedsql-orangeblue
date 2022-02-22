@@ -233,7 +233,7 @@ implementation
 
 uses
   uVarClass, uAppUtils, fGetDateDlg, appunconst, appdmduSystem, AOPfrmuModule, ZSdmdu,
-  appfrmuGlobal, appGenIdUnit, FVConstDefUnit, appDPHunit, fKatalogyModul;
+  appfrmuGlobal, appGenIdUnit, FVConstDefUnit, appDPHunit, fKatalogyModul, uaopfirmaclass;
 
 {$R *.DFM}
 
@@ -605,7 +605,7 @@ begin
     if sAopKod = '' then
       Exit;
 
-    cFirma := TAOPFirmaClass.CreateCustom(sAopKod, false);
+    cFirma := TAOPFirmaClass.Create(sAopKod, false);
     try
       if cFirma.NaselAdresu then
         FakturyDATSPLATNOST.AsDateTime := FakturyDATVYSTAVENI.AsDateTime + cFirma.Splatnost

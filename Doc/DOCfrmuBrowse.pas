@@ -95,13 +95,12 @@ type
     procedure actSetUSExecute(Sender: TObject);
     procedure actSetUSClearExecute(Sender: TObject);
     procedure actPrintToEmailExecute(Sender: TObject);
-    procedure tvViewStylesGetContentStyle(Sender: TcxCustomGridTableView; ARecord: TcxCustomGridRecord; AItem: TcxCustomGridTableItem;
-      var AStyle: TcxStyle);
-    private
-      { Private declarations }
-    public
-      { Public declarations }
-      constructor Create(AOwner: TComponent); override;
+    procedure tvViewStylesGetContentStyle(Sender: TcxCustomGridTableView; ARecord: TcxCustomGridRecord; AItem: TcxCustomGridTableItem; var AStyle: TcxStyle);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+    constructor Create(AOwner: TComponent); override;
   end;
 
 implementation
@@ -162,8 +161,7 @@ begin
   DOCfrmModule.PrintModule(IsDefaultReport, DOCdmd.DOCSeznamSID.AsString);
 end;
 
-procedure TDocBrowseFrm.tvViewStylesGetContentStyle(Sender: TcxCustomGridTableView; ARecord: TcxCustomGridRecord; AItem: TcxCustomGridTableItem;
-  var AStyle: TcxStyle);
+procedure TDocBrowseFrm.tvViewStylesGetContentStyle(Sender: TcxCustomGridTableView; ARecord: TcxCustomGridRecord; AItem: TcxCustomGridTableItem; var AStyle: TcxStyle);
 begin
   inherited;
   if ARecord is TcxGridDataRow then
@@ -213,11 +211,9 @@ var
   aPdfFile   : string;
 begin
   DOCdmd.mod_OpenRecord(DOCdmd.DOCSeznamSID.AsString);
-
-  DOCfrmModule.frrDoc.Recipient.RecipientName := DOCdmd.DOCNAZEV.AsString;
-  DOCfrmModule.frrDoc.Recipient.SendAdress    := DOCdmd.DOCDOCEMAILY.AsString;
-  DOCfrmModule.frrDoc.Recipient.Subject       := DOCdmd.DOCSeznamVEC.AsString;
-  aReportFile                                 := DOCfrmModule.GetDefaultReport;
+  dmReport.frxMailExport.Address := DOCdmd.DOCDOCEMAILY.AsString;
+  dmReport.frxMailExport.Subject := DOCdmd.DOCSeznamVEC.AsString;
+  aReportFile                    := DOCfrmModule.GetDefaultReport;
   dmReport.ExportAndSendEmail(aReportFile, DOCfrmModule.frrDoc, aPdfFile);
 end;
 

@@ -76,6 +76,7 @@ object DOCfrmModule: TDOCfrmModule
       'DOCEMAILY=DOCEMAILY')
     DataSet = DOCdmd.DOC
     BCDToCurrency = False
+    DataSetOptions = []
     Left = 344
     Top = 96
   end
@@ -84,11 +85,12 @@ object DOCfrmModule: TDOCfrmModule
     CloseDataSource = False
     DataSet = DOCdmd.DOCSeznam
     BCDToCurrency = False
+    DataSetOptions = []
     Left = 264
     Top = 96
   end
   object frrDoc: TfrxReport
-    Version = '4.13.1'
+    Version = '2022.1.3'
     DotMatrixReport = False
     IniFile = '\Software\Fast Reports'
     PreviewOptions.Buttons = [pbPrint, pbLoad, pbSave, pbExport, pbZoom, pbFind, pbOutline, pbPageSetup, pbTools, pbEdit, pbNavigator, pbExportQuick]

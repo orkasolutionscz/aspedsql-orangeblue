@@ -44,7 +44,7 @@ implementation
 
 uses
   AOPdmdu, fMessageDlg, AOPfrmuModule, appdmduSystem,
-  AOPConstDefUnit, fKatalogyModul;
+  uAOPConstDefUnit, fKatalogyModul;
 
 {$R *.DFM}
 

@@ -445,7 +445,7 @@ uses
   variants, uVarClass, uAppUtils, JclDateTime, appdmduSystem, AOPfrmuModule, AOPdmdu,
   FVdmdu, ZSConstDefUnit, ZSfrmuModule, FVfrmuModule, appfrmuWaiWindow, ZSGenFVUnit, appGenIdUnit,
   appIniOptionsUnit, appfrmuGlobal, FVConstDefUnit, fKatalogyModul,
-  appDPHunit, AOPConstDefUnit;
+  appDPHunit, uAOPConstDefUnit, uaopfirmaclass;
 
 {$R *.DFM}
 
@@ -671,7 +671,7 @@ begin
   if iRada = EmptyStr then
     iRada := FVfrmModule.NewNumRadaJmeno;
 
-  cFirma := TAOPFirmaClass.CreateCustom(ZAPlatciAOPKOD.AsString, false);
+  cFirma := TAOPFirmaClass.Create(ZAPlatciAOPKOD.AsString, false);
   try
     try
       result   := GenGUIDID22;
@@ -1114,7 +1114,7 @@ end;
 
 procedure TZSdmd.ZasilkyBeforePost(DataSet: TDataSet);
 var
-  lAopInfo: TFirmaObject;
+   lAopInfo: TAOPFirmaClass;
 begin
   ZasilkyZASILKA.AsString := zsfrmmodule.GetNewKeyIdValue(ZasilkyZASILKA.AsString);
 
@@ -1135,7 +1135,7 @@ begin
     end
     else
     begin
-      lAopInfo := AOPdmd.GetAopInfo(ZasilkyAOPKOD_DOP.AsVariant);
+      lAopInfo := TAOPFirmaClass.Create(ZasilkyAOPKOD_DOP.AsVariant, false);
       try
         ZSAddHistoryObject(ZasilkySID.AsString, 'Zmìna Dopravce', 'na ' + lAopInfo.Nazev, True);
       finally

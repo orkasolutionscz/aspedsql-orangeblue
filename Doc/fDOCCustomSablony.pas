@@ -62,7 +62,7 @@ implementation
 
 uses
   appdmduSystem, fMessageDlg, uVarClass, appGenIdUnit, DOCdmdu, appfrmuGlobal, AOPfrmuModule,
-  DOCfrmuModule;
+  DOCfrmuModule, uaopfirmaclass;
 
 {$R *.DFM}
 
@@ -99,7 +99,7 @@ var
   cFirma : TAOPFirmaClass;
   iZnacka: string;
 begin
-  cFirma := TAOPFirmaClass.CreateCustom(aAopKod, false);
+  cFirma := TAOPFirmaClass.Create(aAopKod, false);
   try
     iZnacka := DOCfrmModule.GetNewKeyIdValue(DOCfrmModule.NewNumRadaJmeno);
     result := GenGUIDID22;
@@ -124,7 +124,7 @@ begin
     DOCdmd.DOCVEC.AsString      := aVec;
     DOCdmd.DOCVYRIZUJE.AsString := jfaUserInfo.UserName;
     DOCdmd.DOCDTEXT.Assign(Lines);
-    DOCdmd.DOCDOCEMAILY.AsString := cFirma.SendingAdress;
+    DOCdmd.DOCDOCEMAILY.AsString := cFirma.Email;
     DOCdmd.DOCCREAID.AsString    := jfaUserInfo.UserZnacka;
 
     try

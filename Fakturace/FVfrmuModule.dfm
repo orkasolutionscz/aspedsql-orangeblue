@@ -66,7 +66,7 @@ object FVfrmModule: TFVfrmModule
     end
   end
   object frrFV: TfrxReport
-    Version = '4.13.1'
+    Version = '2022.1.3'
     DotMatrixReport = False
     IniFile = '\Software\Fast Reports'
     PreviewOptions.Buttons = [pbPrint, pbLoad, pbSave, pbExport, pbZoom, pbFind, pbOutline, pbPageSetup, pbTools, pbEdit, pbNavigator, pbExportQuick]
@@ -99,6 +99,8 @@ object FVfrmModule: TFVfrmModule
       RightMargin = 10.000000000000000000
       TopMargin = 10.000000000000000000
       BottomMargin = 10.000000000000000000
+      Frame.Typ = []
+      MirrorMode = []
     end
   end
   object frxFVSeznam: TfrxDBDataset
@@ -141,6 +143,7 @@ object FVfrmModule: TFVfrmModule
       'DOKLAD=DOKLAD')
     DataSet = FVdmd.FakturySeznam
     BCDToCurrency = False
+    DataSetOptions = []
     Left = 272
     Top = 152
   end

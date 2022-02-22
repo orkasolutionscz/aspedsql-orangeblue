@@ -199,7 +199,7 @@ implementation
 uses variants, FVdmdu, appfrmuGlobal, FVfrmuModule, appdmduSystem, ZSfrmuModule,
   ZSdmdu, fMessageDlg, uVarClass, FVfrmuZaokrouleniDlg, ZSConstDefUnit, FVConstDefUnit,
   AOPfrmuModule, JclDateTime, JclFileUtils, appIniOptionsUnit,
-  uFVExportSkodaXml;
+  uFVExportSkodaXml, uaopfirmaclass;
 
 {$R *.DFM}
 
@@ -485,7 +485,7 @@ var
   sAopKod: string;
 begin
   sAopKod := VarToStr(FVdmd.FakturyAOPKOD.AsVariant);
-  cFirma  := TAOPFirmaClass.CreateCustom(sAopKod, true);
+  cFirma  := TAOPFirmaClass.Create(sAopKod, true);
 
   try
     if cFirma.NaselAdresu then
@@ -501,7 +501,7 @@ begin
       FVdmd.FakturyZeme.AsString       := cFirma.Zeme;
       FVdmd.FakturyICO.AsString        := cFirma.ICO;
       FVdmd.FakturyDIC.AsString        := cFirma.DIC;
-      FVdmd.FakturyPLA_EMAILS.AsString := cFirma.SendingAdress;
+      FVdmd.FakturyPLA_EMAILS.AsString := cFirma.Email;
 
       // fldSplatnost                      := cFirma.Splatnost;
     end;

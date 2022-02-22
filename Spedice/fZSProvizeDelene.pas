@@ -48,7 +48,7 @@ type
 
 implementation
 
-uses ZSdmdu, AOPConstDefUnit, appfrmuGlobal, fMessageDlg, AOPdmdu;
+uses ZSdmdu, uAOPConstDefUnit, appfrmuGlobal, fMessageDlg, AOPdmdu;
 
 {$R *.DFM}
 { TfraZSProvize }

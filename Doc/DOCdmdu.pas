@@ -96,7 +96,7 @@ function GetDOCdmd: TDOCdmd;
 implementation
 
 uses
-  uVarClass, appdmduSystem, DOCfrmuModule, DOCConstDefUnit, appGenIdUnit, AOPfrmuModule;
+  uVarClass, appdmduSystem, DOCfrmuModule, DOCConstDefUnit, appGenIdUnit, AOPfrmuModule, uaopfirmaclass;
 
 {$R *.DFM}
 
@@ -173,9 +173,9 @@ begin
   //
   if DOC.state in [dsEdit, dsInsert] then
   begin
-    aFirmaObj := TAOPFirmaClass.CreateCustom(DOCdmd.DOCAOPKOD.AsString, false);
+    aFirmaObj := TAOPFirmaClass.Create(DOCdmd.DOCAOPKOD.AsString, false);
     try
-      if aFirmaObj.Execute(false) then
+      if aFirmaObj.NaselAdresu then
       begin
         DOCNAZEV.AsString     := aFirmaObj.Nazev;
         DOCADRESA1.AsString   := aFirmaObj.Adresa1;
@@ -183,7 +183,7 @@ begin
         DOCPSC.AsString       := aFirmaObj.Psc;
         DOCADRESA3.AsString   := aFirmaObj.Adresa3;
         DOCZEME.AsString      := aFirmaObj.Zeme;
-        DOCDOCEMAILY.AsString := aFirmaObj.SendingAdress;
+        DOCDOCEMAILY.AsString := aFirmaObj.Email;
       end;
 
     finally

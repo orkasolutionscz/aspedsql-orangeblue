@@ -52,7 +52,7 @@ object POPfrmModule: TPOPfrmModule
     end
   end
   object frrModule: TfrxReport
-    Version = '4.15'
+    Version = '2022.1.3'
     DotMatrixReport = False
     IniFile = '\Software\Fast Reports'
     PreviewOptions.Buttons = [pbPrint, pbLoad, pbSave, pbExport, pbZoom, pbFind, pbOutline, pbPageSetup, pbTools, pbEdit, pbNavigator, pbExportQuick]
@@ -85,6 +85,8 @@ object POPfrmModule: TPOPfrmModule
       RightMargin = 10.000000000000000000
       TopMargin = 10.000000000000000000
       BottomMargin = 10.000000000000000000
+      Frame.Typ = []
+      MirrorMode = []
     end
   end
 end

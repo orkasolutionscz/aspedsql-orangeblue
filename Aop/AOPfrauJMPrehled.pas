@@ -52,7 +52,7 @@ type
 implementation
 
 uses
-  AOPConstDefUnit, fMessageDlg, jclMapi, AOPdmdu, appdmduSystem, appfrmuGlobal;
+  uAOPConstDefUnit, fMessageDlg, jclMapi, AOPdmdu, appdmduSystem, appfrmuGlobal;
 
 {$R *.DFM}
 

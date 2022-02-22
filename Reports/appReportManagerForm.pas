@@ -46,7 +46,6 @@ type
     pnlTitle: TPanel;
     PopupMenu1: TPopupMenu;
     PrintDialog1: TPrintDialog;
-    Vchozsestava1: TMenuItem;
     btnClose: TcxButton;
     btnPreview: TcxButton;
     cxPageControl1: TcxPageControl;
@@ -61,7 +60,6 @@ type
     edGBKopie: TcxSpinEdit;
     Label5: TLabel;
     lbReportFileName: TLabel;
-    N1: TMenuItem;
     Upravit1: TMenuItem;
     Nov1: TMenuItem;
     Odstranit1: TMenuItem;
@@ -85,7 +83,6 @@ type
     procedure actPreviewReportExecute(Sender: TObject);
     procedure actRefreshListExecute(Sender: TObject);
     procedure actSelectPrinterExecute(Sender: TObject);
-    procedure actSetDefaultReportExecute(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure Label2Click(Sender: TObject);
@@ -332,10 +329,11 @@ begin
     FReport.LoadFromFile(GetReportFileName);
     dmReport.SetVariables(FReport);
     SetLocalSettings;
-    if FReport.Recipient.Subject = '' then
+
+    if dmReport.frxMailExport.Subject = '' then
     begin
       iRInfo                    := GetSestavaInfo;
-      FReport.Recipient.Subject := iRInfo.DisplayName;
+      dmReport.frxMailExport.Subject := iRInfo.DisplayName;
     end;
     FReport.ShowReport;
   end;
@@ -353,15 +351,6 @@ begin
     intDefaultPrinter       := printer.Printers[printer.printerindex];
     lbSelectPrinter.Caption := intDefaultPrinter;
   end;
-end;
-
-procedure TappReportManagerFrm.actSetDefaultReportExecute(Sender: TObject);
-var
-  s: string;
-begin
-  s := GetReportFileName;
-  repSetDefaultReport(FModuleName, s);
-  Tree.Repaint;
 end;
 
 procedure TappReportManagerFrm.FormCreate(Sender: TObject);
@@ -526,15 +515,14 @@ begin
     if FReport.PrepareReport then
     begin
       SetLocalSettings;
-      if FReport.Recipient.Subject = '' then
+      if dmReport.frxMailExport.Subject = '' then
       begin
         iRInfo                    := GetSestavaInfo;
-        FReport.Recipient.Subject := iRInfo.DisplayName;
+        dmReport.frxMailExport.Subject := iRInfo.DisplayName;
       end;
       FReport.Print;
       Application.ProcessMessages;
       Self.close;
-
     end;
   end;
 

@@ -151,7 +151,7 @@ function GetAppCompsDM: TAppCompsDM;
 
 implementation
 
-uses appdmduSystem, AOPConstDefUnit, fMessageDlg, cxDBLookupEdit, Devexptls;
+uses appdmduSystem, uAOPConstDefUnit, fMessageDlg, cxDBLookupEdit, Devexptls;
 
 {$R *.DFM}
 

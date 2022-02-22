@@ -3,7 +3,7 @@
 			<ProjectGuid>{68F265B8-E6D4-4D1E-8591-41B06987CDED}</ProjectGuid>
 			<MainSource>aswsqlorg.dpr</MainSource>
 			<Base>True</Base>
-			<Config Condition="'$(Config)'==''">Release</Config>
+			<Config Condition="'$(Config)'==''">Debug</Config>
 			<TargetedPlatforms>1</TargetedPlatforms>
 			<AppType>Application</AppType>
 			<FrameworkType>VCL</FrameworkType>
@@ -308,10 +308,6 @@
 				<Form>appfraPathOptions</Form>
 				<DesignClass>TCustomOptionsFrame</DesignClass>
 			</DCCReference>
-			<DCCReference Include="Global\appfrauKomunikaceOptions.pas">
-				<Form>appfraKomunikaceOptions</Form>
-				<DesignClass>TCustomOptionsFrame</DesignClass>
-			</DCCReference>
 			<DCCReference Include="Poptavky\POPfrauOptions.pas">
 				<Form>POPfraOptions</Form>
 				<DesignClass>TCustomOptionsFrame</DesignClass>
@@ -369,7 +365,6 @@
 				<Form>ZSfrmModule</Form>
 				<DesignClass>TjfsEvidenceModule</DesignClass>
 			</DCCReference>
-			<DCCReference Include="Aop\AOPConstDefUnit.pas"/>
 			<DCCReference Include="Doc\DOCConstDefUnit.pas"/>
 			<DCCReference Include="Poptavky\POPConstDefUnit.pas"/>
 			<DCCReference Include="Fakturace\FPUConstDefUnit.pas"/>
@@ -537,6 +532,15 @@
 			<DCCReference Include="Fakturace\fFDVyberZasilkuDlg.pas">
 				<Form>frmFDSelectZasilka</Form>
 			</DCCReference>
+			<DCCReference Include="Reports\fRepSendEmail.pas">
+				<Form>frmRepSendEmail</Form>
+			</DCCReference>
+			<DCCReference Include="Reports\fKomunikaceOptions.pas">
+				<Form>appfraKomunikaceOptions</Form>
+				<DesignClass>TjfsCustomSettingFrame</DesignClass>
+			</DCCReference>
+			<DCCReference Include="Aop\uaopfirmaclass.pas"/>
+			<DCCReference Include="Aop\uAOPConstDefUnit.pas"/>
 			<BuildConfiguration Include="Debug">
 				<Key>Cfg_2</Key>
 				<CfgParent>Base</CfgParent>
@@ -588,7 +592,11 @@
 						<VersionInfoKeys Name="Comments"/>
 						<VersionInfoKeys Name="LastCompiledTime">27.9.2014 9:41:07</VersionInfoKeys>
 					</VersionInfoKeys>
-					<Excluded_Packages/>
+					<Excluded_Packages>
+						<Excluded_Packages Name="$(BDSBIN)\dclib160.bpl">Embarcadero InterBase Express Components</Excluded_Packages>
+						<Excluded_Packages Name="$(BDSBIN)\dcloffice2k160.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
+						<Excluded_Packages Name="$(BDSBIN)\dclofficexp160.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
+					</Excluded_Packages>
 				</Delphi.Personality>
 				<Platforms>
 					<Platform value="Win64">False</Platform>

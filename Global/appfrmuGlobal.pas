@@ -691,7 +691,7 @@ implementation
 uses variants, uAppUtils, fMessageDlg, appdmduSystem, appfrmuKTLJednotky,
   appfrmuKTLMeny, appfrmuKTLDPH, appDPHunit, fKatalogyModul, Devexptls,
   AOPfrmuModule, cxLookupEdit, cxDBLookupComboBox, cxDBLookupEdit,
-  AOPConstDefUnit, fKTLFaktPlatbTexty, FVfrmuKTLTexty, ZSdmdu,
+  uAOPConstDefUnit, fKTLFaktPlatbTexty, FVfrmuKTLTexty, ZSdmdu,
   uAppControler, menus, AOPfrmuEdit, fGridOptions, cxColorComboBox, uCustomForms;
 
 {$R *.DFM}

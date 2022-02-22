@@ -154,7 +154,7 @@ implementation
 uses
   variants, uVarClass, fMessageDlg, appdmduSystem, FVdmdu, FVfrmuModule, ZSfrmuModule,
   appfrmuGlobal, FVConstDefUnit, fKatalogyModul,
-  fStatusLook, fGetDateDlg, appReportModule, JclMapi, appReportUtils, AOPConstDefUnit,
+  fStatusLook, fGetDateDlg, appReportModule, JclMapi, appReportUtils, uAOPConstDefUnit,
   AOPdmdu;
 
 {$R *.DFM}
@@ -411,7 +411,8 @@ begin
   inherited;
 end;
 
-procedure TFVfrmBrowse.tvViewCellDblClick(Sender: TcxCustomGridTableView; ACellViewInfo: TcxGridTableDataCellViewInfo; AButton: TMouseButton; AShift: TShiftState; var AHandled: Boolean);
+procedure TFVfrmBrowse.tvViewCellDblClick(Sender: TcxCustomGridTableView; ACellViewInfo: TcxGridTableDataCellViewInfo; AButton: TMouseButton; AShift: TShiftState;
+  var AHandled: Boolean);
 var
   aname: string;
 const
@@ -537,10 +538,9 @@ var
 begin
   FVdmd.mod_OpenRecord(FVdmd.FakturySeznamSID.AsString);
   AOPdmd.mod_OpenRecord(FVdmd.FakturyAOPKOD.AsString);
-  FVfrmModule.frrFV.Recipient.RecipientName := AOPdmd.dtsAOPNAZEV.AsString;
-  FVfrmModule.frrFV.Recipient.SendAdress    := AOPdmd.dtsAOPEMAIL.AsString;
-  FVfrmModule.frrFV.Recipient.Subject       := 'Faktura: ' + FVdmd.FakturySeznamFAKTURA.AsString;
-  aReportFile                               := FVfrmModule.GetDefaultReport;
+  dmReport.frxMailExport.Address := AOPdmd.dtsAOPEMAIL.AsString;
+  dmReport.frxMailExport.Subject := 'Faktura: ' + FVdmd.FakturySeznamFAKTURA.AsString;
+  aReportFile                    := FVfrmModule.GetDefaultReport;
   dmReport.ExportAndSendEmail(aReportFile, FVfrmModule.frrFV, aPdfFile);
 end;
 

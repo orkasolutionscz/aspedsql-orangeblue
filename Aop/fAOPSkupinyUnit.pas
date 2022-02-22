@@ -34,7 +34,7 @@ type
 implementation
 
 uses
-  fMessageDlg, appdmduSystem, AOPConstDefUnit, AOPdmdu;
+  fMessageDlg, appdmduSystem, uAOPConstDefUnit, AOPdmdu;
 
 {$R *.DFM}
 

@@ -253,7 +253,7 @@ implementation
 
 uses
   appdmduSystem, FDfrmuModule, fMessageDlg, FDConstDefunit, uVarClass,
-  appGenIdUnit, appDPHunit, uAppUtils, appfrmuGlobal, AOPfrmuModule;
+  appGenIdUnit, appDPHunit, uAppUtils, appfrmuGlobal, AOPfrmuModule, uaopfirmaclass;
 
 {$R *.DFM}
 
@@ -490,7 +490,7 @@ var
   cFirma: TAOPFirmaClass;
   procedure NaplnFirmu;
   begin
-    cFirma := TAOPFirmaClass.CreateCustom(FDdmd.ZSRecordAOPKOD_DOP.AsString, false);
+    cFirma := TAOPFirmaClass.Create(FDdmd.ZSRecordAOPKOD_DOP.AsString, false);
     if cFirma.NaselAdresu then
     begin
       FDdmd.FakturyDOAOPKOD.AsVariant    := cFirma.AOPKod;

@@ -63,7 +63,7 @@ uses variants, uVarClass, uAppUtils, POPdmdu, appdmduSystem, _frmuCustomBrowse, 
   POPfrmuEdit, POPfrmuKTLTypy, AOPfrmuModule, appunConst, POPfrauOptions,
   DOCfrmuModule, DOCdmdu, fMessageDlg, DOCConstDefUnit,
   appGenIdUnit, POPConstDefUnit, uAppControler, appReportModule, appfrmuGlobal, JclStrings,
-  appReportManagerForm;
+  appReportManagerForm, uaopfirmaclass;
 
 {$R *.DFM}
 
@@ -205,7 +205,8 @@ const
 
     sListText.Add(strMakeStr(' ', ILINEIDENT) + SDEST_KAM_INFO + CreateDestinace(POPdmd.POPRecordVSTAT.AsString, POPdmd.POPRecordVPSC.AsString, POPdmd.POPRecordVMISTO.AsString));
 
-    sListText.Add(strMakeStr(' ', ILINEIDENT) + Format(SCENAVYSTUP, [POPdmd.POPRecordCENASMLUVNI.AsString, POPdmd.POPRecordCENAMENA.AsString, POPdmd.POPRecordCENAJEDNOTKA.AsString]));
+    sListText.Add(strMakeStr(' ', ILINEIDENT) + Format(SCENAVYSTUP, [POPdmd.POPRecordCENASMLUVNI.AsString, POPdmd.POPRecordCENAMENA.AsString,
+      POPdmd.POPRecordCENAJEDNOTKA.AsString]));
 
     sListText.Add(strMakeStr(' ', ILINEIDENT) + Format(SMATERIAL, [POPdmd.POPRecordCENAPOPIS.AsString]));
 
@@ -217,7 +218,7 @@ begin
   sListText := TStringList.Create;
   POPdmd.mod_OpenRecord(AKeyIdValue);
   sAopKod := VarToStr(POPdmd.POPRecordREF_AOPKOD.AsVariant);
-  cFirma  := TAOPFirmaClass.CreateCustom(sAopKod, false);
+  cFirma  := TAOPFirmaClass.Create(sAopKod, false);
   aNewSID := GenGUIDID22;
 
   try
@@ -304,9 +305,7 @@ end;
 procedure TPOPfrmModule.PrintModule(ADefaultReport: Boolean; AKeyIdValue: string);
 begin
   POPdmd.mod_OpenRecord(AKeyIdValue);
-  frrModule.Recipient.Clear;
-  // frrModule.Recipient.Subject := POPdmd.POPRecordPOPIS.AsString + ' : ' + POPdmd.POPRecordZNACKA.AsString;
-  frrModule.Recipient.Subject := POPdmd.POPRecordZNACKA.AsString;
+  dmReport.frxMailExport.Subject := POPdmd.POPRecordZNACKA.AsString;
   if ADefaultReport then
     dmReport.ShowReport(dmReport.GenEvidenceFolder(ModuleName), frrModule)
   else

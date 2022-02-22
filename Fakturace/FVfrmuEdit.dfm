@@ -973,6 +973,8 @@ inherited frmFVEdit: TfrmFVEdit
             Left = 0
             Top = 0
             Caption = 'POLSeznam'
+            ExplicitWidth = 0
+            ExplicitHeight = 0
             object grdPolozky: TcxGrid
               Left = 0
               Top = 0
@@ -1274,6 +1276,9 @@ inherited frmFVEdit: TfrmFVEdit
       end
       object dxTabSheet2: TcxTabSheet
         Caption = 'Pozn'#225'mka'
+        ExplicitTop = 0
+        ExplicitWidth = 0
+        ExplicitHeight = 0
         object edPoznamka: TcxDBMemo
           Left = 0
           Top = 0

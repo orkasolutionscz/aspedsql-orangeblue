@@ -7,7 +7,8 @@ uses
   frxExportHTML, frxGradient, frxChBox, frxBarcode, frxExportPDF, frxExportRTF,
   frxCross, frxRich, frxChart, frxClass, frxDCtrl, frxOLE, frxDesgn, frxExportXML,
   frxExportMail, frxExportCSV, frxExportText, frxGZip, frxExportODF, DB,
-  frxADOComponents, frxIBZComponents, uCustomModule;
+  frxADOComponents, frxIBZComponents, uCustomModule, IBODataset,
+  frxExportBaseDialog;
 
 type
   TReportType = (rptSestava);
@@ -18,20 +19,20 @@ type
 
   // Zkraceny seznam pro exportni formaty
   TReportObjectInfo = class(TObject)
-    public
-      DisplayName    : string;
-      FileName       : string;
-      FullFileName   : string;
-      ImageIndex     : integer;
-      IsCustomPrinter: boolean;
-      IsReadOnly     : boolean;
-      Kopie          : integer;
-      PrinterName    : string;
-      ReportType     : TReportType;
-      constructor Create(AFileName: string);
-      procedure ClearSetting;
-      procedure LoadFromFile;
-      procedure SaveToFile;
+  public
+    DisplayName    : string;
+    FileName       : string;
+    FullFileName   : string;
+    ImageIndex     : integer;
+    IsCustomPrinter: boolean;
+    IsReadOnly     : boolean;
+    Kopie          : integer;
+    PrinterName    : string;
+    ReportType     : TReportType;
+    constructor Create(AFileName: string);
+    procedure ClearSetting;
+    procedure LoadFromFile;
+    procedure SaveToFile;
   end;
 
   TdmReport = class(TjfsEvidenceModule)
@@ -61,37 +62,42 @@ type
     frxODTExport1: TfrxODTExport;
     fri1: TfrxIBZComponents;
     frxPDFExport1: TfrxPDFExport;
+    dtsGetReportVar: TIBOQuery;
+    dtsGetReportVarVARVALUE: TMemoField;
+    dtsGetReportVarGLBVARNAME: TStringField;
     procedure DataModuleCreate(Sender: TObject);
     procedure lmssCustomDataModuleInitModule(Sender: TObject);
-    function frxMailExportSendMail(const Server: String; const Port: integer; const UserField, PasswordField: String;
-      FromField, ToField, SubjectField, CompanyField, TextField: WideString; FileNames: TStringList; Timeout: integer;
-      ConfurmReading: boolean): String;
     procedure jfsEvidenceModuleInitModule(Sender: TObject);
     procedure frxMailExportBeginExport(Sender: TObject);
     procedure frxPDFMailBeginExport(Sender: TObject);
-    private
-      { Private declarations }
-    public
-      { Public declarations }
-      function TempDirName: string;
-      { Nastaveni a nacteni promennych pro report }
-      procedure SetVariables(aFrReport: TfrxReport);
+    function frxMailExportSendMail(const Server: string; const Port: integer; const UserField, PasswordField: string;
+      FromField, ToField, SubjectField, CompanyField, TextField: WideString; FileNames: TStringList; Timeout: integer; ConfurmReading: boolean;
+      MailCc, MailBcc: WideString): string;
+    procedure frxMailExportAfterSendMail(const MailResult: string);
+  private
+    { Private declarations }
 
-      (* function ExportReport(
-        AReportName: string;
-        AExportType: TfrxCustomExportFilter;
-        var AExportFileList: TStrings;
-        AShowReport: boolean;
-        AShowExportFile: boolean): boolean;
-      *)
-      procedure ShowManager(AFolder: string; aFrReport: TfrxReport);
-      procedure ShowReport(AReportName: string; aFrReport: TfrxReport);
-      procedure PrintReport(AReportName: string; aFrReport: TfrxReport);
-      function ExportReportPDF(AReportName: string; aFrReport: TfrxReport): string;
+  public
+    { Public declarations }
+    function TempDirName: string;
+    { Nastaveni a nacteni promennych pro report }
+    procedure SetVariables(aFrReport: TfrxReport);
 
-      function ExportAndSendEmail(AReportName: string; aFrReport: TfrxReport; var AAttachFile: string): boolean;
-      // Generuje nazev slozky pro urcitou evidenci
-      function GenEvidenceFolder(const AEvidence: string): string;
+    (* function ExportReport(
+      AReportName: string;
+      AExportType: TfrxCustomExportFilter;
+      var AExportFileList: TStrings;
+      AShowReport: boolean;
+      AShowExportFile: boolean): boolean;
+    *)
+    procedure ShowManager(AFolder: string; aFrReport: TfrxReport);
+    procedure ShowReport(AReportName: string; aFrReport: TfrxReport);
+    procedure PrintReport(AReportName: string; aFrReport: TfrxReport);
+    function ExportReportPDF(AReportName: string; aFrReport: TfrxReport): string;
+
+    function ExportAndSendEmail(AReportName: string; aFrReport: TfrxReport; var AAttachFile: string): boolean;
+    // Generuje nazev slozky pro urcitou evidenci
+    function GenEvidenceFolder(const AEvidence: string): string;
 
   end;
 
@@ -136,7 +142,8 @@ uses
   // , appEmailUtils
     , frxVariables, appIniOptionsUnit
   // , gbuUtility
-    , appdmduSystem, Vcl.Clipbrd;
+    , appdmduSystem, Vcl.Clipbrd, Vcl.Controls,
+  fRepSendEmail;
 
 const
   REP_INI_FILENAME = 'Reports.ini';
@@ -302,7 +309,6 @@ end;
 function TdmReport.ExportAndSendEmail(AReportName: string; aFrReport: TfrxReport; var AAttachFile: string): boolean;
 var
   aBaseName: string;
-  bJeFax   : boolean;
   JclEmailW: TJclEmail;
 
 begin
@@ -312,7 +318,7 @@ begin
     exit;
 
   aBaseName := IntToStr(DateTimeToFileDate(now));
-  bJeFax    := pos('@fax', aFrReport.Recipient.SendAdress) > 0;
+  // bJeFax    := pos('@fax', frxMailExport.Address) > 0;
 
   try
     // frxReport.Clear;
@@ -343,17 +349,14 @@ begin
       begin
         JclEmailW := TJclEmail.Create;
         try
-          JclEmailW.Recipients.Add(AnsiString(aFrReport.Recipient.SendAdress), AnsiString(aFrReport.Recipient.RecipientName));
+          JclEmailW.Recipients.Add(AnsiString(frxMailExport.Address), '');
 
           JclEmailW.ClientConnectKind   := sfMAPIClientConnect;
           JclEmailW.SelectedClientIndex := sfMAPISelectedClientIndex;
           if sfMailCCAdress <> '' then
             JclEmailW.Recipients.Add(AnsiString(sfMailCCAdress), AnsiString(sfMailCCAdress));
           JclEmailW.Attachments.Add(AnsiString(AAttachFile));
-          if bJeFax then
-            JclEmailW.Subject := AnsiString('s=' + aFrReport.Recipient.Subject + ' p=' + sfFaxCzRegEmailPasswd)
-          else
-            JclEmailW.Subject := AnsiString(aFrReport.Recipient.Subject);
+          JclEmailW.Subject := AnsiString(frxMailExport.Subject);
 
           Application.ProcessMessages;
           Result := JclEmailW.Send(sfMAPIShowMailDialog);
@@ -483,10 +486,10 @@ const
   frcRegister = 'Registrace';
   frcUser     = 'Uživatel';
   frcOther    = 'Ostatní';
+  frcDBVars   = 'Global DB';
 begin
   if aFrReport = nil then
     exit;
-
   aFrReport.Variables.Clear;
   aFrReport.Variables[' ' + frcRegister] := Null;
   aFrReport.Variables.AddVariable(frcRegister, vnAppTitle, StrSingleQuote(Application.Title));
@@ -511,52 +514,20 @@ begin
   aFrReport.Variables.AddVariable(frcOther, vnOtherRecId, 0);
   aFrReport.Variables.AddVariable(frcOther, vnOtherSqlWhere, 'true');
   aFrReport.Variables.AddVariable(frcOther, vnOtherShowDate, False);
+  // Nacteni promennych z DB
+  aFrReport.Variables[' ' + frcDBVars] := Null;
 
-end;
-
-function TdmReport.frxMailExportSendMail(const Server: String; const Port: integer; const UserField, PasswordField: String;
-  FromField, ToField, SubjectField, CompanyField, TextField: WideString; FileNames: TStringList; Timeout: integer; ConfurmReading: boolean): String;
-var
-  JclEmailW: TJclEmail;
-begin
-  JclEmailW := TJclEmail.Create;
-  try
-    try
-
-      if (frxMailExport.Report.Recipient.SendAdress <> '') and sfMailAddToAddres then
-        JclEmailW.Recipients.Add(AnsiString(frxMailExport.Report.Recipient.SendAdress), AnsiString(frxMailExport.Report.Recipient.RecipientName));
-      // JclEmailW.Recipients.Add(ToField, ToField);
-      JclEmailW.ClientConnectKind   := sfMAPIClientConnect;
-      JclEmailW.SelectedClientIndex := sfMAPISelectedClientIndex;
-
-      // if FileExists(RepAttachFile) then
-      if sfMailCCAdress <> '' then
-        JclEmailW.Recipients.Add(AnsiString(sfMailCCAdress), AnsiString(sfMailCCAdress));
-
-      JclEmailW.Attachments.Assign(FileNames);
-      // rec
-      if pos(sfFaxCzServer, frxMailExport.Report.Recipient.SendAdress) > 0 then
-        JclEmailW.Subject := AnsiString('s=' + frxMailExport.Report.Recipient.Subject + ' p=' + sfFaxCzRegEmailPasswd)
-      else
-        JclEmailW.Subject := AnsiString(frxMailExport.Report.Recipient.Subject);
-
-      // Pokus o reseni problému s prevedenim prilohy emailu do formatu windat.dat
-      JclEmailW.HtmlBody := False;
-      // Kopie adresz do Clipboadr
-      Clipboard.AsText := frxMailExport.Report.Recipient.SendAdress;
-
-      Application.ProcessMessages;
-      JclEmailW.Send(sfMAPIShowMailDialog);
-      Application.ProcessMessages;
-
-      if sfMAPIAutoCloseMailDialog and (frxMailExport.Report.PreviewForm <> nil) then
-        frxMailExport.Report.PreviewForm.Close;
-    except
-      Application.MessageBox('Neznámá chyba , zkuste jiný zpusob odeslání', 'Odeslání dat', MB_ICONEXCLAMATION or MB_OK);
-    end;
-  finally
-    JclEmailW.Free;
+  dtsGetReportVar.Close;
+  dtsGetReportVar.Open;
+  while not dtsGetReportVar.EOF do
+  begin
+    if Length(dtsGetReportVarVARVALUE.AsString) < 255 then
+      aFrReport.Variables.AddVariable(frcDBVars, dtsGetReportVarGLBVARNAME.AsString, StrSingleQuote(dtsGetReportVarVARVALUE.AsString))
+    else
+      aFrReport.Variables.AddVariable(frcDBVars, dtsGetReportVarGLBVARNAME.AsString, dtsGetReportVarVARVALUE.AsString);
+    dtsGetReportVar.Next;
   end;
+
 end;
 
 procedure TdmReport.frxPDFMailBeginExport(Sender: TObject);
@@ -574,6 +545,12 @@ begin
   frxPDFExport1.EmbeddedFonts := sfMAPIPDFEmbeddedFont;
 end;
 
+procedure TdmReport.frxMailExportAfterSendMail(const MailResult: string);
+begin
+  frxMailExport.Address := '';
+  frxMailExport.Subject := '';
+end;
+
 procedure TdmReport.frxMailExportBeginExport(Sender: TObject);
 begin
   frxJPEGExport.SeparateFiles := True;
@@ -587,6 +564,64 @@ begin
     frxMailExport.ExportFilter := frxJPEGExport;
   end;
   frxMailExport.ExportFilter.SlaveExport := False;
+
+end;
+
+function TdmReport.frxMailExportSendMail(const Server: string; const Port: integer; const UserField, PasswordField: string;
+  FromField, ToField, SubjectField, CompanyField, TextField: WideString; FileNames: TStringList; Timeout: integer; ConfurmReading: boolean; MailCc, MailBcc: WideString): string;
+var
+  JclEmailW: TJclEmail;
+  dlgSend  : TfrmRepSendEmail;
+begin
+  dlgSend := TfrmRepSendEmail.Create(Application);
+  try
+    dlgSend.edSubject.Text := frxMailExport.Subject;
+    dlgSend.edSendTo.Text  := frxMailExport.Address;
+
+    if dlgSend.ShowModal = mrOk then
+    begin
+
+      JclEmailW := TJclEmail.Create;
+      try
+        try
+
+          if (dlgSend.edSendTo.Text <> '') and sfMailAddToAddres then
+            JclEmailW.Recipients.Add(AnsiString(dlgSend.edSendTo.Text), '');
+          // JclEmailW.Recipients.Add(ToField, ToField);
+          JclEmailW.ClientConnectKind   := sfMAPIClientConnect;
+          JclEmailW.SelectedClientIndex := sfMAPISelectedClientIndex;
+
+          // if FileExists(RepAttachFile) then
+          if sfMailCCAdress <> '' then
+            JclEmailW.Recipients.Add(AnsiString(sfMailCCAdress), AnsiString(sfMailCCAdress));
+
+          JclEmailW.Attachments.Assign(FileNames);
+          // rec
+          JclEmailW.Subject := AnsiString(dlgSend.edSubject.Text);
+          JclEmailW.Body    := AnsiString(dlgSend.cxmBody.Text);
+          // Pokus o reseni problému s prevedenim prilohy emailu do formatu windat.dat
+          JclEmailW.HtmlBody := False;
+          // Kopie adresz do Clipboadr
+          Clipboard.AsText := frxMailExport.Address;
+
+          Application.ProcessMessages;
+          JclEmailW.Send(sfMAPIShowMailDialog);
+          Application.ProcessMessages;
+
+          if sfMAPIAutoCloseMailDialog and (frxMailExport.Report.PreviewForm <> nil) then
+            frxMailExport.Report.PreviewForm.Close;
+        except
+          Application.MessageBox('Neznámá chyba , zkuste jiný zpusob odeslání', 'Odeslání dat', MB_ICONEXCLAMATION or MB_OK);
+        end;
+      finally
+        JclEmailW.Free;
+      end;
+
+    end;
+
+  finally
+    dlgSend.Free;
+  end;
 
 end;
 

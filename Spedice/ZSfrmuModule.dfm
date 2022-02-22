@@ -96,7 +96,7 @@ object ZSfrmModule: TZSfrmModule
     end
   end
   object frrZS: TfrxReport
-    Version = '4.15'
+    Version = '2022.1.3'
     DotMatrixReport = False
     IniFile = '\Software\Fast Reports'
     PreviewOptions.Buttons = [pbPrint, pbLoad, pbSave, pbExport, pbZoom, pbFind, pbOutline, pbPageSetup, pbTools, pbEdit, pbNavigator, pbExportQuick]
@@ -129,6 +129,8 @@ object ZSfrmModule: TZSfrmModule
       RightMargin = 10.000000000000000000
       TopMargin = 10.000000000000000000
       BottomMargin = 10.000000000000000000
+      Frame.Typ = []
+      MirrorMode = []
     end
   end
   object frxZSSeznam: TfrxDBDataset
@@ -190,6 +192,7 @@ object ZSfrmModule: TZSfrmModule
       'KRATKEINFO=KRATKEINFO')
     DataSet = ZSdmd.ZasilkySeznam
     BCDToCurrency = False
+    DataSetOptions = []
     Left = 364
     Top = 100
   end
@@ -287,6 +290,7 @@ object ZSfrmModule: TZSfrmModule
       'VYRIZENO=VYRIZENO')
     DataSet = ZSdmd.Zasilky
     BCDToCurrency = False
+    DataSetOptions = []
     Left = 100
     Top = 188
   end

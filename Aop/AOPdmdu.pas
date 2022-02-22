@@ -15,7 +15,7 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, DBTables, Db, fMessageDlg, ActnList, cxEdit,
   cxDBEditRepository, cxEditRepositoryItems, IBODataset, IB_Components,
-  uCustomModule, AOPConstDefUnit, IB_Process, IB_Script, Vcl.ExtCtrls;
+  uCustomModule, uAOPConstDefUnit, IB_Process, IB_Script, Vcl.ExtCtrls;
 
 type
   TAOPdmd = class(TjfsDefaultModule)
@@ -233,7 +233,6 @@ type
     function CopyRecord(AOldId: string; aAutoPost: boolean = true): string;
     function AOPKodNotExist(AAOPKOD: string): boolean;
     function AOPDIcExist(AAOPKOD: string; aDIc: string): boolean;
-    function GetAopInfo(AAOPKOD: string): TFirmaObject;
     function GetDefEmail(AAOPKOD: string): string;
     function GetAopColor(AAOPKOD: string): integer;
   end;
@@ -409,31 +408,6 @@ begin
 
 end;
 
-function TAOPdmd.GetAopInfo(AAOPKOD: string): TFirmaObject;
-begin
-  Result := nil;
-  dtsAopInfo.Close;
-  dtsAopInfo.ParamByName('AOPKOD').AsString := AAOPKOD;
-  dtsAopInfo.open;
-
-  if not dtsAopInfo.IsEmpty then
-  begin
-    Result               := TFirmaObject.Create;
-    Result.AopKod        := AAOPKOD;
-    Result.Nazev         := dtsAopInfoNAZEV.AsString;
-    Result.Adresa1       := dtsAopInfoADRESA1.AsString;
-    Result.Adresa2       := dtsAopInfoADRESA2.AsString;
-    Result.Adresa3       := dtsAopInfoADRESA3.AsString;
-    Result.Psc           := dtsAopInfoPSC.AsString;
-    Result.Zeme          := dtsAopInfoPOPISZEME.AsString;
-    Result.ZemeKod       := dtsAopInfoKODZEME.AsString;
-    Result.ICO           := dtsAopInfoICO.AsString;
-    Result.DIC           := dtsAopInfoDIC.AsString;
-    Result.SendingAdress := dtsAopInfoEMAIL.AsString;
-    Result.Splatnost     := dtsAopInfoSPLATNOST.AsInteger;
-    Result.Vlastnik      := dtsAopInfoVLASTNIK.AsString;
-  end;
-end;
 
 procedure TAOPdmd.dtsAOPAfterDelete(DataSet: TDataSet);
 begin

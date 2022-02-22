@@ -142,7 +142,7 @@ implementation
 uses
   uVarClass, fMessageDlg, uAppUtils, JclStrings, FDfrmuModule, FDdmdu, appdmduSystem, AOPfrmuModule,
   ZSfrmuModule, appfrmuGlobal, FVfrmuZaokrouleniDlg, appDPHunit, FDConstDefunit,
-  appGenIdUnit, fKatalogyModul, ZSfrmuVyberDlg, fFDVyberZasilkuDlg;
+  appGenIdUnit, fKatalogyModul, ZSfrmuVyberDlg, fFDVyberZasilkuDlg, uaopfirmaclass;
 
 {$R *.DFM}
 
@@ -223,7 +223,7 @@ procedure TFDfrmEdit.edNazevButtonClick(Sender: TObject; AbsoluteIndex: Integer)
 var
   cFirma: TAOPFirmaClass;
 begin
-  cFirma := TAOPFirmaClass.CreateCustom(FDdmd.FakturyDOAOPKOD.AsString, True);
+  cFirma := TAOPFirmaClass.Create(FDdmd.FakturyDOAOPKOD.AsString, True);
   try
     if cFirma.NaselAdresu then
     begin

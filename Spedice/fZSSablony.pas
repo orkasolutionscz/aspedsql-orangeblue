@@ -64,7 +64,7 @@ implementation
 uses
   appdmduSystem, ZSdmdu, fMessageDlg, ZSfrmuModule, ZSConstDefUnit, uDbMerger,
   fMemoTextDlg, DOCfrmuModule, DOCdmdu, AOPfrmuModule, appGenIdUnit, uVarClass,
-  appfrmuGlobal;
+  appfrmuGlobal, uaopfirmaclass;
 
 {$R *.DFM}
 
@@ -193,7 +193,7 @@ var
   iZnacka: string;
   aNewsId: string;
 begin
-  cFirma := TAOPFirmaClass.CreateCustom(ZSdmd.ZasilkyAOPKOD_OBJ.AsString, false);
+  cFirma := TAOPFirmaClass.Create(ZSdmd.ZasilkyAOPKOD_OBJ.AsString, false);
   try
 
     iZnacka := DOCfrmModule.GetNewKeyIdValue(DOCfrmModule.NewNumRadaJmeno);
@@ -221,7 +221,7 @@ begin
     DOCdmd.DOCVEC.AsString      := aVec;
     DOCdmd.DOCVYRIZUJE.AsString := jfaUserInfo.UserName;
     DOCdmd.DOCDTEXT.Assign(Lines);
-    DOCdmd.DOCDOCEMAILY.AsString := cFirma.SendingAdress;
+    DOCdmd.DOCDOCEMAILY.AsString := cFirma.Email;
 
     DOCdmd.DOCCREAID.AsString := jfaUserInfo.UserZnacka;
 

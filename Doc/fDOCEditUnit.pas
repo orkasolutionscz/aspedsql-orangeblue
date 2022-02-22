@@ -12,7 +12,7 @@ uses
   cxDBLookupComboBox, DBActns, cxButtons, fCustEdit,
   cxGraphics, cxLookAndFeels, cxLookAndFeelPainters, dxBarExtItems,
   dxLayoutcxEditAdapters, dxLayoutContainer, dxLayoutControl, fCustEditLay,
-  cxRichEdit, cxDBRichEdit;
+  cxRichEdit, cxDBRichEdit, uaopfirmaclass;
 
 type
   TDOCfrmEdit = class(TfrmCustEditLay)
@@ -68,14 +68,14 @@ type
     procedure jfsCustomEvidFormDestroy(Sender: TObject);
     procedure actCreateEmailExecute(Sender: TObject);
     procedure actSendMailExecute(Sender: TObject);
-    private
-      { Private declarations }
-      OldFirmyPropertiesButtonClick: TcxEditButtonClickEvent;
-      procedure repFirmyPropertiesButtonClick(Sender: TObject; AButtonIndex: Integer);
-    public
-      { Public declarations }
-      procedure FillAopAdresa(aFirmaObj: TAOPFirmaClass);
-      constructor Create(AOwner: TComponent); override;
+  private
+    { Private declarations }
+    OldFirmyPropertiesButtonClick: TcxEditButtonClickEvent;
+    procedure repFirmyPropertiesButtonClick(Sender: TObject; AButtonIndex: Integer);
+  public
+    { Public declarations }
+    procedure FillAopAdresa(aFirmaObj: TAOPFirmaClass);
+    constructor Create(AOwner: TComponent); override;
   end;
 
 var
@@ -86,7 +86,7 @@ implementation
 uses
   uVarClass, DOCdmdu, DOCfrmuModule, appdmduSystem, fMessageDlg,
   appGenIdUnit, DOCConstDefUnit, appfrmuGlobal, AOPfrmuEdit, AOPdmdu,
-  AOPConstDefUnit, AOPfrmuPickUser, Devexptls, JclMapi, uSendFaxMail,
+  uAOPConstDefUnit, AOPfrmuPickUser, Devexptls, JclMapi, uSendFaxMail,
   appReportModule, appReportUtils;
 
 {$R *.DFM}
@@ -126,7 +126,7 @@ begin
     DOCdmd.DOCPsc.AsString       := aFirmaObj.Psc;
     DOCdmd.DOCAdresa3.AsString   := aFirmaObj.Adresa3;
     DOCdmd.DOCZeme.AsString      := aFirmaObj.Zeme;
-    DOCdmd.DOCDOCEMAILY.AsString := aFirmaObj.SendingAdress;
+    DOCdmd.DOCDOCEMAILY.AsString := aFirmaObj.email;
   end;
 end;
 
@@ -221,16 +221,15 @@ end;
 
 procedure TDOCfrmEdit.repFirmyPropertiesButtonClick(Sender: TObject; AButtonIndex: Integer);
 var
-  lFirma: TFirmaObject;
+  lFirma: TAOPFirmaCustomClass;
 begin
   case AButtonIndex of (* *)
     1:
       begin
-        lFirma        := TFirmaObject.Create;
-        lFirma.AOPKod := DOCdmd.DOCAOPKOD.AsString;
+        lFirma := TAOPFirmaClass.Create(DOCdmd.DOCAOPKOD.AsString, True);
 
         try
-          if AopGetKontakt(lFirma) then
+          if lFirma.naseladresu then
           begin
             self.SetEditsState;
             DOCdmd.DOCAOPKOD.AsString    := lFirma.AOPKod;
@@ -240,7 +239,7 @@ begin
             DOCdmd.DOCPsc.AsString       := lFirma.Psc;
             DOCdmd.DOCAdresa3.AsString   := lFirma.Adresa3;
             DOCdmd.DOCZeme.AsString      := lFirma.Zeme;
-            DOCdmd.DOCDOCEMAILY.AsString := lFirma.SendingAdress;
+            DOCdmd.DOCDOCEMAILY.AsString := lFirma.email;
           end;
 
         finally
@@ -249,7 +248,7 @@ begin
       end;
     2:
       begin
-        lFirma := TFirmaObject.Create;
+        lFirma := TAOPFirmaCustomClass.Create;
         try
           lFirma.AOPKod := DOCdmd.DOCAOPKOD.AsString;
           if lFirma.AOPKod <> '' then
@@ -264,7 +263,7 @@ begin
               DOCdmd.DOCPsc.AsString       := lFirma.Psc;
               DOCdmd.DOCAdresa3.AsString   := lFirma.Adresa3;
               DOCdmd.DOCZeme.AsString      := lFirma.Zeme;
-              DOCdmd.DOCDOCEMAILY.AsString := lFirma.SendingAdress;
+              DOCdmd.DOCDOCEMAILY.AsString := lFirma.email;
             end;
           end;
         finally
@@ -329,18 +328,18 @@ begin
 
       // if FileExists(RepAttachFile) then
       if sfMailCCAdress <> '' then
-        JclEmailW.Recipients.Add(ansistring(sfMailCCAdress), ansistring(sfMailCCAdress));
+        JclEmailW.Recipients.Add(AnsiString(sfMailCCAdress), AnsiString(sfMailCCAdress));
 
       // JclEmailW.Attachments.Assign(FileNames);
       // rec
-      JclEmailW.Subject  := aSubject;
+      JclEmailW.Subject := aSubject;
       // JclEmailW.Body.Font := edEditor.Style.Font;
-      JclEmailW.HtmlBody := false; //true;
+      JclEmailW.HtmlBody := false; // true;
       JclEmailW.Body     := AnsiString(DOCdmd.DOCDTEXT.AsString);
 
       Application.ProcessMessages;
       // Tady votrebujeme vzdy zobrazit okno nove zpravy
-      JclEmailW.Send(true);
+      JclEmailW.Send(True);
       //
       Application.ProcessMessages;
 
@@ -357,9 +356,8 @@ procedure TDOCfrmEdit.actSendMailExecute(Sender: TObject);
 var
   aPdfFile: string;
 begin
-  DOCfrmModule.frrDoc.Recipient.RecipientName := DOCdmd.DOCNAZEV.AsString;
-  DOCfrmModule.frrDoc.Recipient.SendAdress    := DOCdmd.DOCDOCEMAILY.AsString;
-  DOCfrmModule.frrDoc.Recipient.Subject       := DOCdmd.DOCVEC.AsString;
+  dmReport.frxMailExport.Address := DOCdmd.DOCDOCEMAILY.AsString;
+  dmReport.frxMailExport.Subject := DOCdmd.DOCVEC.AsString;
 
   // aReportFile :=  repGetDefaultReport(dmReport.GenEvidenceFolder(DOCfrmModule.ModuleName));
   dmReport.ExportAndSendEmail(DOCfrmModule.DefaultReport, DOCfrmModule.frrDoc, aPdfFile);

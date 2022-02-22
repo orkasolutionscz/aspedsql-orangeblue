@@ -65,7 +65,6 @@ uses
   DOCfrauOptions in 'Doc\DOCfrauOptions.pas' {DOCfraOptions: TCustomOptionsFrame},
   POPfrmuKTLTypy in 'Poptavky\POPfrmuKTLTypy.pas' {POPfrmKTLTypy},
   appfrauPathOptions in 'Global\appfrauPathOptions.pas' {appfraPathOptions: TCustomOptionsFrame},
-  appfrauKomunikaceOptions in 'Global\appfrauKomunikaceOptions.pas' {appfraKomunikaceOptions: TCustomOptionsFrame},
   POPfrauOptions in 'Poptavky\POPfrauOptions.pas' {POPfraOptions: TCustomOptionsFrame},
   fAppOptions in 'Global\fAppOptions.pas' {GlobalOptionsFrm},
   appfrmuWaiWindow in 'Global\appfrmuWaiWindow.pas' {appfrmWaiWindow},
@@ -88,7 +87,6 @@ uses
   FDConstDefunit in 'Fakturace\FDConstDefunit.pas',
   ZSConstDefUnit in 'Spedice\ZSConstDefUnit.pas',
   ZSfrmuModule in 'Spedice\ZSfrmuModule.pas' {ZSfrmModule: TjfsEvidenceModule},
-  AOPConstDefUnit in 'Aop\AOPConstDefUnit.pas',
   DOCConstDefUnit in 'Doc\DOCConstDefUnit.pas',
   POPConstDefUnit in 'Poptavky\POPConstDefUnit.pas',
   FPUConstDefUnit in 'Fakturace\FPUConstDefUnit.pas',
@@ -144,7 +142,11 @@ uses
   fMemoTextDlg in '_components\fMemoTextDlg.pas' {frmMemoTextDlg},
   fSQLModulControler in '_components\fSQLModulControler.pas' {fraSQLModul: TFrame},
   uSendFaxMail in 'Reports\uSendFaxMail.pas',
-  fFDVyberZasilkuDlg in 'Fakturace\fFDVyberZasilkuDlg.pas' {frmFDSelectZasilka};
+  fFDVyberZasilkuDlg in 'Fakturace\fFDVyberZasilkuDlg.pas' {frmFDSelectZasilka},
+  fRepSendEmail in 'Reports\fRepSendEmail.pas' {frmRepSendEmail},
+  fKomunikaceOptions in 'Reports\fKomunikaceOptions.pas' {appfraKomunikaceOptions: TjfsCustomSettingFrame},
+  uaopfirmaclass in 'Aop\uaopfirmaclass.pas',
+  uAOPConstDefUnit in 'Aop\uAOPConstDefUnit.pas';
 
 {$R *.RES}
 {$R czechlang.RES}
@@ -161,7 +163,6 @@ begin
   jfsAppManager.RegisterOptFrame(TfraGlobalGrdOptions.Create(Application));
   jfsAppManager.RegisterOptFrame(TappfraKomunikaceOptions.Create(Application));
   jfsAppManager.RegisterOptFrame(TfraGlobalOptions.Create(Application));
-  //jfsAppManager.RegisterOptFrame(TfraGridOptions.Create(Application));
   jfsAppManager.RegisterOptFrame(TZSfraOptions.Create(Application));
   jfsAppManager.RegisterOptFrame(TAOPfraOptions.Create(Application));
   jfsAppManager.RegisterOptFrame(TDOCfraOptions.Create(Application));

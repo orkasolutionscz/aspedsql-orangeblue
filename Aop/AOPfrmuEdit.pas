@@ -27,10 +27,10 @@ uses
   cxLookupEdit, cxDBLookupEdit,
   cxDBLookupComboBox, cxButtons, dxBar, Db, cxLabel, dxBarExtItems,
   DBActns, cxDBEdit, rsStorage, rsPropSaver, fCustEdit,
-  AOPConstDefUnit, frCustomDocsFrame, cxCurrencyEdit, cxCalendar, cxGroupBox,
+  uAOPConstDefUnit, frCustomDocsFrame, cxCurrencyEdit, cxCalendar, cxGroupBox,
   cxGraphics, cxLookAndFeels, cxLookAndFeelPainters, Vcl.Menus,
   cxPCdxBarPopupMenu, cxStyles, cxCustomData, cxFilter, cxData, cxDataStorage,
-  cxNavigator, cxDBData, cxImageComboBox, uEnterTab, Vcl.Imaging.GIFImg;
+  cxNavigator, cxDBData, cxImageComboBox, uEnterTab, Vcl.Imaging.GIFImg, uaopfirmaclass;
 
 type
   TAOPfrmEdit = class(TfrmCustEdit)
@@ -152,11 +152,11 @@ type
     { Public declarations }
     constructor Create(AOwner: TComponent); override;
     Function SendingAdres: string;
+    function SelectedKontakt: Integer;
   end;
 
 function AopGetDetail(var aAOPKOD: string; aNewRec: Boolean = false; aSelect: Boolean = false): Boolean;
-
-function AopGetDetailSendAdres(aFirmaObjekt: TFirmaObject): Boolean;
+function AopGetDetailSendAdres(aFirmaObjekt: TAOPFirmaCustomClass): Boolean;
 
 implementation
 
@@ -207,7 +207,7 @@ begin
   end;
 end;
 
-function AopGetDetailSendAdres(aFirmaObjekt: TFirmaObject): Boolean;
+function AopGetDetailSendAdres(aFirmaObjekt: TAOPFirmaCustomClass): Boolean;
 var
   dlg: TAOPfrmEdit;
 begin
@@ -225,21 +225,22 @@ begin
     result := (dlg.ShowModal = mrOk);
     if result then
     begin
-      aFirmaObjekt.AopKod     := AOPdmd.dtsAOPAOPKOD.AsString;
-      aFirmaObjekt.Nazev      := AOPdmd.dtsAOPNAZEV.AsString;
-      aFirmaObjekt.Adresa1    := AOPdmd.dtsAOPADRESA1.AsString;
-      aFirmaObjekt.Adresa2    := AOPdmd.dtsAOPADRESA2.AsString;
-      aFirmaObjekt.Adresa3    := AOPdmd.dtsAOPADRESA3.AsString;
-      aFirmaObjekt.Psc        := AOPdmd.dtsAOPPSC.AsString;
-      aFirmaObjekt.ZemeKod    := AOPdmd.dtsAOPKODZEME.AsString;
-      aFirmaObjekt.Zeme       := AOPdmd.dtsAOPPOPISZEME.AsString;
-      aFirmaObjekt.ICO        := AOPdmd.dtsAOPICO.AsString;
-      aFirmaObjekt.DIC        := AOPdmd.dtsAOPDIC.AsString;
-      aFirmaObjekt.Ucet_Cislo := AOPdmd.dtsAOPUCET.AsString;
-      aFirmaObjekt.Ucet_Banka := AOPdmd.dtsAOPBANKAKOD.AsString;
-      aFirmaObjekt.Splatnost  := AOPdmd.dtsAOPSPLATNOST.AsInteger;
+      aFirmaObjekt.AopKod         := AOPdmd.dtsAOPAOPKOD.AsString;
+      aFirmaObjekt.Nazev          := AOPdmd.dtsAOPNAZEV.AsString;
+      aFirmaObjekt.Adresa1        := AOPdmd.dtsAOPADRESA1.AsString;
+      aFirmaObjekt.Adresa2        := AOPdmd.dtsAOPADRESA2.AsString;
+      aFirmaObjekt.Adresa3        := AOPdmd.dtsAOPADRESA3.AsString;
+      aFirmaObjekt.Psc            := AOPdmd.dtsAOPPSC.AsString;
+      aFirmaObjekt.ZemeKod        := AOPdmd.dtsAOPKODZEME.AsString;
+      aFirmaObjekt.Zeme           := AOPdmd.dtsAOPPOPISZEME.AsString;
+      aFirmaObjekt.ICO            := AOPdmd.dtsAOPICO.AsString;
+      aFirmaObjekt.DIC            := AOPdmd.dtsAOPDIC.AsString;
+      aFirmaObjekt.Ucet_Cislo     := AOPdmd.dtsAOPUCET.AsString;
+      aFirmaObjekt.Ucet_Banka     := AOPdmd.dtsAOPBANKAKOD.AsString;
+      aFirmaObjekt.Splatnost      := AOPdmd.dtsAOPSPLATNOST.AsInteger;
+      aFirmaObjekt.Email          := dlg.SendingAdres;
+      aFirmaObjekt.SelecteKontakt := dlg.SelectedKontakt;
 
-      aFirmaObjekt.SendingAdress := dlg.SendingAdres;
     end;
   finally
     dlg.Free;
@@ -253,7 +254,7 @@ begin
   framePrilohy              := TfraCustomDocs.Create(self);
   dsZaznam.DataSet          := AOPdmd.dtsAOP; // Staci jednou GetAOPdmd, pak uz mame jistotu ze modul AOPdmd existuje
   dsKontakty.DataSet        := AOPdmd.dtsAOPJmena;
-  AOPdmd.dtsAOPJmena.Active := True;
+  AOPdmd.dtsAOPJmena.Active := true;
   cbZeme.RepositoryItem     := GetAOPmodul.repStaty;
   edPrefMail.RepositoryItem := GetdmdGlobal.repPrefMail;
   edVlastnik.RepositoryItem := dmdGlobal.repUsers;
@@ -399,6 +400,14 @@ end;
 procedure TAOPfrmEdit.edEmailEnter(Sender: TObject);
 begin
   IsKontakty := false;
+end;
+
+function TAOPfrmEdit.SelectedKontakt: Integer;
+begin
+  if not AOPdmd.dtsAOPJmena.IsEmpty then
+    result := AOPdmd.dtsAOPJmenaID.AsInteger
+  else
+    result := 0;
 end;
 
 function TAOPfrmEdit.SendingAdres: string;

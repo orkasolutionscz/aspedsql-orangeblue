@@ -194,7 +194,7 @@ uses
   variants, fMessageDlg, JclStrings, uSqlUtils, uVarClass, shellapi,
   appdmduSystem, STdmdu, ZSfrmuModule,
   STfrmuModule, cxGridExportLink, appfrmuGlobal, fGridExportDlg,
-  fKatalogyModul, AOPConstDefUnit, AOPfrmuEdit, appIniOptionsUnit;
+  fKatalogyModul, uAOPConstDefUnit, AOPfrmuEdit, appIniOptionsUnit, uaopfirmaclass;
 
 {$R *.DFM}
 
@@ -244,8 +244,8 @@ begin
 
     STdmd.dtsProvizeFaktura.close;
     STdmd.dtsProvizeFaktura.ParamByName('JEFAKTURA').AsString := 'T';
-    STdmd.dtsProvizeFaktura.ParamByName('DSTART').AsDate := dpStart.Date;
-    STdmd.dtsProvizeFaktura.ParamByName('DSTOP').AsDate := dpStop.Date;
+    STdmd.dtsProvizeFaktura.ParamByName('DSTART').AsDate      := dpStart.Date;
+    STdmd.dtsProvizeFaktura.ParamByName('DSTOP').AsDate       := dpStop.Date;
     STdmd.dtsProvizeFaktura.open;
 
     STdmd.dtsProvizeDispecer.close;
@@ -333,11 +333,11 @@ begin
   tvAopDispAOP_NAZEV.RepositoryItem := repBtnFirmaDetail;
 
   // nastaveni datasetu dle typu data pro vyber
-    dsDispAll.DataSet                 := GetSTdmd.dtsDispAll;
-    dsAopDisp.DataSet                 := STdmd.dtsDispAop;
-    dsPriDis.DataSet                  := STdmd.dtsPriDis;
-    dsPrikazciPrehled.DataSet         := STdmd.dtsPrikaciPrehled;
-    dsDopravciPrehled.DataSet         := STdmd.dtsDopravciPrehled;
+  dsDispAll.DataSet         := GetSTdmd.dtsDispAll;
+  dsAopDisp.DataSet         := STdmd.dtsDispAop;
+  dsPriDis.DataSet          := STdmd.dtsPriDis;
+  dsPrikazciPrehled.DataSet := STdmd.dtsPrikaciPrehled;
+  dsDopravciPrehled.DataSet := STdmd.dtsDopravciPrehled;
 
 end;
 
@@ -406,9 +406,9 @@ end;
 
 procedure TfrmSTVystupy.repBtnFirmaDetailPropertiesButtonClick(Sender: TObject; AButtonIndex: Integer);
 var
-  lFirma: TFirmaObject;
+  lFirma: TAOPFirmaCustomClass;
 begin
-  lFirma        := TFirmaObject.Create;
+  lFirma        := TAOPFirmaCustomClass.Create;
   lFirma.AopKod := VarToStr(tvAopDispAOPKOD_OBJ.EditValue);
 
   try

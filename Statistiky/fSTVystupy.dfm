@@ -143,6 +143,10 @@ inherited frmSTVystupy: TfrmSTVystupy
     object TabSheet2: TTabSheet
       Caption = 'Celkov'#253' v'#253'voj provize'
       ImageIndex = 1
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Splitter2: TSplitter
         Left = 151
         Top = 0
@@ -420,6 +424,10 @@ inherited frmSTVystupy: TfrmSTVystupy
     end
     object TabSheet1: TTabSheet
       Caption = 'Provize dle p'#345#237'kazce'
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object pnlPrikazciTitle: TPanel
         Left = 0
         Top = 0

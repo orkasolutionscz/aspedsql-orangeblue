@@ -5,22 +5,22 @@ inherited AOPBrowseFrm: TAOPBrowseFrm
   ClientHeight = 679
   ClientWidth = 986
   OnFormPrint = gbCustomMDIModulePrint
-  ExplicitWidth = 994
-  ExplicitHeight = 706
+  ExplicitWidth = 1002
+  ExplicitHeight = 717
   PixelsPerInch = 96
   TextHeight = 13
   inherited pnlBrowse: TPanel
-    Top = 49
+    Top = 50
     Width = 986
-    Height = 630
-    ExplicitTop = 49
+    Height = 629
+    ExplicitTop = 50
     ExplicitWidth = 986
-    ExplicitHeight = 630
+    ExplicitHeight = 629
     inherited cxGrid1: TcxGrid
       Width = 986
-      Height = 422
+      Height = 421
       ExplicitWidth = 986
-      ExplicitHeight = 422
+      ExplicitHeight = 421
       inherited tvView: TcxGridDBTableView
         DataController.Options = [dcoAssignGroupingValues, dcoAssignMasterDetailKeys, dcoSaveExpanding]
         OptionsData.Editing = True
@@ -147,7 +147,7 @@ inherited AOPBrowseFrm: TAOPBrowseFrm
     end
     object pnlKontakty: TPanel
       Left = 0
-      Top = 430
+      Top = 429
       Width = 986
       Height = 200
       Align = alBottom
@@ -171,7 +171,7 @@ inherited AOPBrowseFrm: TAOPBrowseFrm
     end
     object cxSplitter1: TcxSplitter
       Left = 0
-      Top = 422
+      Top = 421
       Width = 986
       Height = 8
       AlignSplitter = salBottom
@@ -192,11 +192,6 @@ inherited AOPBrowseFrm: TAOPBrowseFrm
       Caption = 'Administr'#225'tor'
       ImageIndex = 34
       OnExecute = actRecAdministratorExecute
-    end
-    object actSendMail: TAction
-      Caption = 'Odeslat E-mail'
-      ImageIndex = 58
-      OnExecute = actSendMailExecute
     end
     object actPrevedAdresu: TAction
       Caption = 'P'#345'evod adresy'
@@ -255,7 +250,7 @@ inherited AOPBrowseFrm: TAOPBrowseFrm
     AlwaysMerge = True
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
-    Font.Height = -11
+    Font.Height = -12
     Font.Name = 'Tahoma'
     Font.Style = []
     Categories.Strings = (
@@ -290,14 +285,14 @@ inherited AOPBrowseFrm: TAOPBrowseFrm
     DockControlHeights = (
       0
       0
-      49
+      50
       0)
     object dxBarManager1Bar1: TdxBar
       Caption = 'Z'#225'znam'
       CaptionButtons = <>
       DockedDockingStyle = dsTop
       DockedLeft = 0
-      DockedTop = 23
+      DockedTop = 24
       DockingStyle = dsTop
       FloatLeft = 487
       FloatTop = 205
@@ -394,11 +389,6 @@ inherited AOPBrowseFrm: TAOPBrowseFrm
           BeginGroup = True
           Visible = True
           ItemName = 'dxBarButton1'
-        end
-        item
-          BeginGroup = True
-          Visible = True
-          ItemName = 'dxbAopSendMail'
         end>
       OneOnRow = True
       Row = 1
@@ -443,8 +433,10 @@ inherited AOPBrowseFrm: TAOPBrowseFrm
       Category = 0
     end
     object dxbAopSendMail: TdxBarButton
-      Action = actSendMail
+      Caption = 'Odeslat E-mail'
       Category = 0
+      Visible = ivAlways
+      ImageIndex = 58
       PaintStyle = psCaptionGlyph
     end
     object dxBarButton1: TdxBarButton

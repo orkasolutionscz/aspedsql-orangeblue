@@ -25,18 +25,18 @@ type
   end;                 //
 
   TaswCenaRK = class
-    private
-      fDPHZakladni, fSumaZakladni, fDPHSnizena, fSumaSnizena, fZaokrouhleni, fSumaSuma, fSumaDPH, fCelkem: real;
-    public
-      constructor CreateAndRecalc(AZakladni, ASnizena, ANulova: real; AZaokroulheni: TjfsZaokrouhleni; ADanPovinnost: Tdate);
-      property calcDPHZakladni: real read fDPHZakladni;
-      property calcSumaZakladni: real read fSumaZakladni;
-      property calcDPHSnizena: real read fDPHSnizena;
-      property calcSumaSnizena: real read fSumaSnizena;
-      property calcZaokrouhleni: real read fZaokrouhleni;
-      property calcSumaSuma: real read fSumaSuma;
-      property calcSumaDPH: real read fSumaDPH;
-      property calcCelkem: real read fCelkem;
+  private
+    fDPHZakladni, fSumaZakladni, fDPHSnizena, fSumaSnizena, fZaokrouhleni, fSumaSuma, fSumaDPH, fCelkem: real;
+  public
+    constructor CreateAndRecalc(AZakladni, ASnizena, ANulova: real; AZaokroulheni: TjfsZaokrouhleni; ADanPovinnost: Tdate);
+    property calcDPHZakladni: real read fDPHZakladni;
+    property calcSumaZakladni: real read fSumaZakladni;
+    property calcDPHSnizena: real read fDPHSnizena;
+    property calcSumaSnizena: real read fSumaSnizena;
+    property calcZaokrouhleni: real read fZaokrouhleni;
+    property calcSumaSuma: real read fSumaSuma;
+    property calcSumaDPH: real read fSumaDPH;
+    property calcCelkem: real read fCelkem;
   end;
 
   TFVfrmModule = class(TjfsEvidenceModule)
@@ -59,32 +59,32 @@ type
     procedure actFVBrowseExecute(Sender: TObject);
     procedure jfsEvidenceModuleFinalModule(Sender: TObject);
     procedure frrFVGetValue(const VarName: String; var Value: Variant);
-    private
-      { Private declarations }
-    public
-      { Public declarations }
-      gbusrAUCenaZasilky: boolean; // Automaticky aktualizovat cenu v zasilce
-      gbFVBefore        : Integer;
-      gbRychlaLikvidace  : boolean; // Pokud chceme likvidovat s aktualnim datem, nastavme na TRUE
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+    gbusrAUCenaZasilky: boolean; // Automaticky aktualizovat cenu v zasilce
+    gbFVBefore        : Integer;
+    gbRychlaLikvidace : boolean; // Pokud chceme likvidovat s aktualnim datem, nastavme na TRUE
 
-      procedure PrintModule(ADefaultReport: boolean = false; AKeyIdValue: string = ''); override;
-      function GetDefaultReport: string;
-      procedure ShowBrowse(AWhere: string);
-      function ShowDetail(var AFaktura: string; Mode: TFormShowMode): boolean;
-      function GetNewKeyIdValue(ARada: string): string;
+    procedure PrintModule(ADefaultReport: boolean = false; AKeyIdValue: string = ''); override;
+    function GetDefaultReport: string;
+    procedure ShowBrowse(AWhere: string);
+    function ShowDetail(var AFaktura: string; Mode: TFormShowMode): boolean;
+    function GetNewKeyIdValue(ARada: string): string;
 
-      { Katalogy }
-      { FV Katalogy }
-      procedure ShowKTLTypFaktury;
-      procedure ShowKTLTypUhrady;
-      procedure ShowKTLUcty;
-      procedure ShowKTLTexty;
-      { Pohledy }
-      procedure ViewShowAOP(AZnacka: string);
-      procedure ViewShowZasilka(AZasilka: string);
-      { Odpojeni prepravy }
-      procedure FVFreeOnZS(AFaktura: string);
-      // procedure FVUpdateFakturaAndCenaKc(AFaktura: string);
+    { Katalogy }
+    { FV Katalogy }
+    procedure ShowKTLTypFaktury;
+    procedure ShowKTLTypUhrady;
+    procedure ShowKTLUcty;
+    procedure ShowKTLTexty;
+    { Pohledy }
+    procedure ViewShowAOP(AZnacka: string);
+    procedure ViewShowZasilka(AZasilka: string);
+    { Odpojeni prepravy }
+    procedure FVFreeOnZS(AFaktura: string);
+    // procedure FVUpdateFakturaAndCenaKc(AFaktura: string);
   end;
 
 var
@@ -172,7 +172,7 @@ function TFVfrmModule.GetDefaultReport: string;
 begin
   if (DefaultReport = '') or (not FileExists(DefaultReport)) then
     DefaultReport := RMselectSestava(dmReport.GenEvidenceFolder(ModuleName), frrFV);
-  Result := DefaultReport;
+  Result          := DefaultReport;
 end;
 
 function TFVfrmModule.GetNewKeyIdValue(ARada: string): string;
@@ -184,8 +184,8 @@ end;
 
 procedure TFVfrmModule.Sho(Sender: TObject);
 begin
-  gbusrAUCenaZasilky  := false;
-  gbRychlaLikvidace   := false;
+  gbusrAUCenaZasilky := false;
+  gbRychlaLikvidace  := false;
 end;
 
 procedure TFVfrmModule.ShowKTLTypFaktury;
@@ -243,9 +243,9 @@ end;
 procedure TFVfrmModule.Load(Sender: TObject);
 begin
   { DONE : Dodelat }
-  gbusrAUCenaZasilky  := rsPropModule.Storage.ReadBoolean(RV_AUCENAZS, gbusrAUCenaZasilky);
-  gbRychlaLikvidace   := rsPropModule.Storage.ReadBoolean('gbRychlaLikvidace', gbRychlaLikvidace);
-  gbFVBefore          := rsPropModule.Storage.ReadInteger('gbFVBefore', gbFVBefore);
+  gbusrAUCenaZasilky := rsPropModule.Storage.ReadBoolean(RV_AUCENAZS, gbusrAUCenaZasilky);
+  gbRychlaLikvidace  := rsPropModule.Storage.ReadBoolean('gbRychlaLikvidace', gbRychlaLikvidace);
+  gbFVBefore         := rsPropModule.Storage.ReadInteger('gbFVBefore', gbFVBefore);
 end;
 
 procedure TFVfrmModule.Save(Sender: TObject);
@@ -326,7 +326,7 @@ begin
   try
     try
       // Uvolnime odkazy na zasilku ve fakture
-      dmdSystem.spProc.SQL.Text                    :=   'UPDATE FV SET REF_ZASILKA = NULL, REFPLATCE = NULL, TYP = 0 WHERE SID = :SID';
+      dmdSystem.spProc.SQL.Text                    := 'UPDATE FV SET REF_ZASILKA = NULL, REFPLATCE = NULL, TYP = 0 WHERE SID = :SID';
       dmdSystem.spProc.ParamByName('SID').AsString := AFaktura;
       dmdSystem.spProc.ExecSQL;
 
@@ -399,15 +399,9 @@ end;
 procedure TFVfrmModule.PrintModule(ADefaultReport: boolean; AKeyIdValue: string);
 begin
   FVdmd.mod_OpenRecord(AKeyIdValue);
-  frrFV.Recipient.SendAdress := GetAOPmodul.GetKommEmail(FVdmd.FakturyAOPKOD.AsString);
-  frrFV.Recipient.Subject    := 'Faktura: ' + FVdmd.FakturyFAKTURA.AsString;
-
-  dmReport.frxMailExport.Subject := 'Faktura: ' + FVdmd.FakturyFAKTURA.AsString;
-  dmReport.frxPDFMail.FileName   := FVdmd.FakturyFAKTURA.AsString + '.pdf';
-
-  dmReport.frxMailExport.UseMAPI    := true;
-  dmReport.frxMailExport.Address    := AOPfrmModule.GetKommEmail(FVdmd.FakturyAOPKOD.AsString);
-  dmReport.frxMailExport.ShowDialog := false;
+  dmReport.frxMailExport.Address    := GetAOPmodul.GetKommEmail(FVdmd.FakturyAOPKOD.AsString);
+  dmReport.frxMailExport.Subject    := 'Faktura: ' + FVdmd.FakturyFAKTURA.AsString;
+  dmReport.frxPDFMail.FileName      := FVdmd.FakturyFAKTURA.AsString + '.pdf';
 
   if ADefaultReport then
   begin
