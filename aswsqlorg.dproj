@@ -3,7 +3,7 @@
 			<ProjectGuid>{68F265B8-E6D4-4D1E-8591-41B06987CDED}</ProjectGuid>
 			<MainSource>aswsqlorg.dpr</MainSource>
 			<Base>True</Base>
-			<Config Condition="'$(Config)'==''">Debug</Config>
+			<Config Condition="'$(Config)'==''">Release</Config>
 			<TargetedPlatforms>1</TargetedPlatforms>
 			<AppType>Application</AppType>
 			<FrameworkType>VCL</FrameworkType>
