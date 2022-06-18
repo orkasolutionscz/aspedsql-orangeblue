@@ -9,7 +9,7 @@ uses
   Menus, uAKTCode, ImgList, cxGridCustomView, cxEdit,
   cxEditRepositoryItems, IB_Components, IBODataset, IB_Access, cxGraphics,
   IB_Process, IB_Script, cxPropertiesStore,
-  frxClass, frxDBSet;
+  frxClass, frxDBSet, IB_Dialogs;
 
 type
   TAspedActivation = class(TjfsActivation)
@@ -116,6 +116,10 @@ type
     dtsFormsLoadFORM_IDENT: TStringField;
     dtsFormsLoadFORM_ID: TIntegerField;
     dtsFormsLoadREF_USER: TStringField;
+    iboBrowseDb: TIB_BrowseDialog;
+    actDBBrowse: TAction;
+    iboDBScript: TIB_ScriptDialog;
+    actDBScripts: TAction;
     procedure dmdSystemDestroy(Sender: TObject);
     procedure actAppSetupExecute(Sender: TObject);
     procedure actLoginUserExecute(Sender: TObject);
@@ -139,6 +143,8 @@ type
     procedure dtsUsersNewRecord(DataSet: TDataSet);
     procedure dtsUsersAfterPost(DataSet: TDataSet);
     procedure CloseAllWindows;
+    procedure actDBBrowseExecute(Sender: TObject);
+    procedure actDBScriptsExecute(Sender: TObject);
   private
     FgbFirebirdDateTimeFormat: string;
     procedure SetgbFirebirdDateTimeFormat(const Value: string);
@@ -921,6 +927,8 @@ begin
       // pridano 16.9.2008. Uzivatele smi nastavovat pouze administrator
       actSetupUsers.Visible := jfaUserInfo.AdminsUser;
       actDBBAckup.Visible   := jfaUserInfo.AdminsUser;
+      actDBBrowse.Visible   := jfaUserInfo.AdminsUser;
+      actDBScripts.Visible   := jfaUserInfo.AdminsUser;
 
       lmGlobalInitDefaultModules;
 
@@ -1006,6 +1014,11 @@ begin
   // ShowModal;
   // Free;
   // end;
+end;
+
+procedure TdmdSystem.actDBScriptsExecute(Sender: TObject);
+begin
+  iboDBScript.Execute;
 end;
 
 procedure TdmdSystem.rsPropUserAfterLoad(Sender: TObject);
@@ -1095,6 +1108,11 @@ begin
   // Filename := 'backup_live.fbk';
   // Backup(True,False);
   // end;
+end;
+
+procedure TdmdSystem.actDBBrowseExecute(Sender: TObject);
+begin
+  iboBrowseDb.Execute;
 end;
 
 procedure TdmdSystem.rsndtFormsLoadFromStream(Sender: TObject; Stream: TStream; var DoStandard: Boolean);

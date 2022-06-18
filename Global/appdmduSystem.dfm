@@ -42,6 +42,16 @@ object dmdSystem: TdmdSystem
       ImageIndex = 51
       OnExecute = actDBBAckupExecute
     end
+    object actDBBrowse: TAction
+      Caption = 'DB Manager'
+      ImageIndex = 26
+      OnExecute = actDBBrowseExecute
+    end
+    object actDBScripts: TAction
+      Caption = 'DB Skripty'
+      ImageIndex = 39
+      OnExecute = actDBScriptsExecute
+    end
   end
   object rsSTUser: TrsStorage
     Active = False
@@ -681,5 +691,15 @@ object dmdSystem: TdmdSystem
       Origin = 'SYSFORMS.FORM_IDENT'
       Size = 80
     end
+  end
+  object iboBrowseDb: TIB_BrowseDialog
+    BaseConnection = IBOMainDB
+    Left = 480
+    Top = 312
+  end
+  object iboDBScript: TIB_ScriptDialog
+    BaseConnection = IBOMainDB
+    Left = 576
+    Top = 312
   end
 end

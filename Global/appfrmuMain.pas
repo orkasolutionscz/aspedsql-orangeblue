@@ -118,6 +118,8 @@ type
     actUpdateKTL: TAction;
     cxLocalizer1: TcxLocalizer;
     dxBarButton2: TdxBarButton;
+    dxb3: TdxBarButton;
+    dxb4: TdxBarButton;
     procedure HelpAbout1Execute(Sender: TObject);
     procedure actExitExecute(Sender: TObject);
     procedure FormCreate(Sender: TObject);

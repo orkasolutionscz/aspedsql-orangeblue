@@ -584,6 +584,14 @@ object frmMainForm: TfrmMainForm
         item
           BeginGroup = True
           Visible = True
+          ItemName = 'dxb3'
+        end
+        item
+          Visible = True
+          ItemName = 'dxb4'
+        end
+        item
+          Visible = True
           ItemName = 'dxBarButton53'
         end>
     end
@@ -954,6 +962,14 @@ object frmMainForm: TfrmMainForm
     end
     object dxbBackup: TdxBarButton
       Action = dmdSystem.actDBBAckup
+      Category = 1
+    end
+    object dxb3: TdxBarButton
+      Action = dmdSystem.actDBBrowse
+      Category = 1
+    end
+    object dxb4: TdxBarButton
+      Action = dmdSystem.actDBScripts
       Category = 1
     end
   end
